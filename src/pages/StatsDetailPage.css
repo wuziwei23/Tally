@@ -1,0 +1,98 @@
+.sdet {
+  padding: 0 var(--pad);
+  padding-bottom: 40px;
+}
+
+.sdet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 56px 0 20px;
+}
+
+.sdet__back {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: var(--border-width) solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.sdet__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.sdet__tabs {
+  margin-bottom: 20px;
+}
+
+.sdet__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sdet__card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.sdet__card-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 2px dashed #E5E0DA;
+}
+
+.sdet__card-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sdet__card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sdet__card-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-gray);
+}
+
+.sdet__card-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.text-green { color: var(--text-green); }
+.text-red { color: var(--text-red); }
+
+.sdet__empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-gray);
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}

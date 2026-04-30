@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTransactions } from '../context/TransactionContext';
 import SegmentedControl from '../components/stats/SegmentedControl';
 import StatsEmpty from '../components/stats/StatsEmpty';
@@ -19,6 +20,7 @@ const PERIOD_OPTIONS = [
 
 export default function ChartsPage() {
   const { transactions } = useTransactions();
+  const navigate = useNavigate();
   const [type, setType] = useState('expense');
   const [period, setPeriod] = useState('month');
 
@@ -31,7 +33,15 @@ export default function ChartsPage() {
     <div className="page page-enter">
       <div className="charts">
         <div className="charts__header">
-          <h1 className="charts__title">统计</h1>
+          <div className="charts__title-row">
+            <h1 className="charts__title">统计</h1>
+            <button className="charts__detail-btn" onClick={() => navigate('/stats-detail')}>
+              详细
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
           <p className="charts__sub">看看最近花了多少、主要花在哪些分类。</p>
         </div>
 
