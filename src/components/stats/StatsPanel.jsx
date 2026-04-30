@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { getCategoryById } from '../../data/categories';
 import { formatCurrency } from '../../utils/format';
+import CategoryIcon from '../common/CategoryIcon';
 import './StatsPanel.css';
 
 function filterByPeriod(txns, period) {
@@ -48,7 +49,7 @@ export default function StatsPanel({ transactions, type, period }) {
     return Object.entries(map)
       .map(([catId, amount]) => {
         const cat = getCategoryById(catId);
-        return { name: cat.name, icon: cat.icon, color: cat.color, amount, pct: absTotal > 0 ? ((amount / absTotal) * 100).toFixed(0) : 0 };
+        return { name: cat.name, catId, color: cat.color, amount, pct: absTotal > 0 ? ((amount / absTotal) * 100).toFixed(0) : 0 };
       })
       .sort((a, b) => b.amount - a.amount);
   }, [filtered]);
@@ -111,7 +112,7 @@ export default function StatsPanel({ transactions, type, period }) {
             {byCat.map((c, i) => (
               <div key={c.name} className="sp__rank-item">
                 <span className="sp__rank-no">{i + 1}</span>
-                <span className="sp__rank-icon">{c.icon}</span>
+                <span className="sp__rank-icon"><CategoryIcon categoryId={c.catId} size={20} color={c.color} /></span>
                 <span className="sp__rank-name">{c.name}</span>
                 <div className="sp__rank-bar-track">
                   <div className="sp__rank-bar-fill" style={{ width: `${c.pct}%`, background: c.color }} />

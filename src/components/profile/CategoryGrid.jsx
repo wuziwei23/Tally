@@ -1,8 +1,5 @@
+import CategoryIcon from '../common/CategoryIcon';
 import './CategoryGrid.css';
-
-function getCatChar(name) {
-  return name.charAt(0);
-}
 
 export default function CategoryGrid({ categories }) {
   return (
@@ -10,7 +7,7 @@ export default function CategoryGrid({ categories }) {
       {categories.map(cat => (
         <div key={cat.id} className="catgrid__item">
           <span className="catgrid__icon" style={{ background: cat.color + '25', color: cat.color }}>
-            {getCatChar(cat.name)}
+            <CategoryIcon categoryId={cat.id} size={18} color={cat.color} />
           </span>
           <span className="catgrid__name">{cat.name}</span>
         </div>

@@ -1,11 +1,8 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { getCategoryById } from '../../data/categories';
 import { formatCurrency } from '../../utils/format';
+import CategoryIcon from '../common/CategoryIcon';
 import './HistoryCard.css';
-
-function getCatChar(name) {
-  return name.charAt(0);
-}
 
 function getDisplayTime(txn) {
   if (txn.createdAt) {
@@ -23,7 +20,6 @@ const SNAP_OPEN = -140;
 export default function HistoryCard({ txn, onDelete, onEdit, isOpen, onSwipeStart }) {
   const cat = getCategoryById(txn.categoryId);
   const isExpense = txn.type === 'expense';
-  const char = getCatChar(cat.name);
   const time = getDisplayTime(txn);
 
   const startX = useRef(0);
@@ -105,7 +101,7 @@ export default function HistoryCard({ txn, onDelete, onEdit, isOpen, onSwipeStar
         onTouchEnd={handleTouchEnd}
       >
         <div className="hcard__icon" style={{ background: cat.color + '25', color: cat.color }}>
-          {char}
+          <CategoryIcon categoryId={txn.categoryId} size={20} color={cat.color} />
         </div>
         <div className="hcard__info">
           <span className="hcard__name">{txn.note || cat.name}</span>

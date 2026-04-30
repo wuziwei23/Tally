@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTransactions } from '../../context/TransactionContext';
 import { getCategoryById } from '../../data/categories';
 import { formatCurrency, getToday } from '../../utils/format';
+import CategoryIcon from '../common/CategoryIcon';
 import './TodayRecordList.css';
 
 export default function TodayRecordList() {
@@ -40,7 +41,9 @@ export default function TodayRecordList() {
             const isExpense = txn.type === 'expense';
             return (
               <div key={txn.id} className="tr__item">
-                <span className="tr__icon">{cat.icon}</span>
+                <span className="tr__icon">
+                  <CategoryIcon categoryId={txn.categoryId} size={20} color={cat.color} />
+                </span>
                 <div className="tr__info">
                   <span className="tr__name">{cat.name}</span>
                   {txn.note && <span className="tr__note">{txn.note}</span>}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTransactions } from '../context/TransactionContext';
 import { expenseCategories, incomeCategories } from '../data/categories';
 import { getToday } from '../utils/format';
+import CategoryIcon from '../components/common/CategoryIcon';
 import './AddTransactionPage.css';
 
 export default function AddTransactionPage() {
@@ -94,8 +95,9 @@ export default function AddTransactionPage() {
               >
                 <span className="add-pg__cat-icon" style={{
                   background: categoryId === cat.id ? cat.color : cat.color + '25',
+                  color: cat.color,
                 }}>
-                  {cat.icon}
+                  <CategoryIcon categoryId={cat.id} size={20} color={cat.color} />
                 </span>
                 <span className="add-pg__cat-name">{cat.name}</span>
               </button>
