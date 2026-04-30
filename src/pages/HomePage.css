@@ -1,0 +1,33 @@
+.home {
+  padding: 0 var(--pad);
+  padding-bottom: 100px;
+}
+
+.text-green { color: var(--text-green); }
+.text-red { color: var(--text-red); }
+
+/* Header */
+.home__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 56px 0 20px;
+}
+
+.home__title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.home__bell {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: var(--border-width) solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}

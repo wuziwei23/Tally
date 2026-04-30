@@ -1,0 +1,215 @@
+.add-pg {
+  padding: 0 var(--pad);
+  padding-bottom: 40px;
+}
+
+.add-pg__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 56px 0 20px;
+}
+
+.add-pg__back {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: var(--border-width) solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.add-pg__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+/* Type Toggle */
+.add-pg__type {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-pg__type-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--r-full);
+  border: var(--border-width) solid var(--border);
+  background: var(--bg-card);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-gray);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+
+.add-pg__type-btn:active { transform: translateY(2px); }
+
+.add-pg__type-btn--expense {
+  background: var(--bg-pink);
+  color: var(--text-dark);
+}
+
+.add-pg__type-btn--income {
+  background: var(--bg-green);
+  color: var(--text-dark);
+}
+
+/* Amount Card */
+.add-pg__amount-card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.add-pg__amount-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.add-pg__currency {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.add-pg__amount-input {
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--text-dark);
+  background: none;
+  border: none;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+  padding: 0;
+}
+
+.add-pg__amount-input:focus {
+  outline: none;
+}
+
+.add-pg__amount-input::placeholder {
+  color: var(--text-gray);
+  opacity: 0.5;
+}
+
+/* Sections */
+.add-pg__section {
+  margin-bottom: 20px;
+}
+
+.add-pg__label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+/* Category Grid */
+.add-pg__cat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.add-pg__cat-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.add-pg__cat-btn:active { transform: scale(0.95); }
+
+.add-pg__cat-btn--active {
+  border-color: var(--text-dark);
+  box-shadow: 2px 2px 0px var(--text-dark);
+  transform: translateY(-2px);
+}
+
+.add-pg__cat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 16px;
+  border: 2px solid var(--border);
+}
+
+.add-pg__cat-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Input */
+.add-pg__input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font);
+  transition: border-color 0.2s;
+}
+
+.add-pg__input:focus {
+  outline: none;
+  border-color: var(--text-dark);
+}
+
+.add-pg__input::placeholder {
+  color: var(--text-gray);
+}
+
+/* Submit */
+.add-pg__submit {
+  width: 100%;
+  margin-top: 12px;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 800;
+  font-family: var(--font);
+  background: var(--bg-yellow);
+  color: var(--text-dark);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.add-pg__submit:active {
+  transform: translateY(3px);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.12);
+}
+
+.add-pg__submit--disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}

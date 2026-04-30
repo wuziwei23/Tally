@@ -1,0 +1,101 @@
+.qe {
+  margin-bottom: 24px;
+}
+
+.qe__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.qe__sub {
+  font-size: 13px;
+  color: var(--text-gray);
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.qe__cards {
+  display: flex;
+  gap: 12px;
+}
+
+.qe__card {
+  flex: 1;
+  padding: 16px;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font);
+  transition: transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 150px;
+}
+
+.qe__card:active {
+  transform: translateY(3px);
+}
+
+.qe__card--green {
+  background: #EAF5E0;
+}
+
+.qe__card--pink {
+  background: #FDE8E8;
+}
+
+.qe__card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qe__card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.qe__badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--r-full);
+  border: 2px solid var(--border);
+}
+
+.qe__badge--orange {
+  background: #FDECC8;
+  color: #B8860B;
+}
+
+.qe__badge--yellow {
+  background: #FFF3C4;
+  color: #92700C;
+}
+
+.qe__card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.qe__card-desc {
+  font-size: 11px;
+  color: var(--text-gray);
+  font-weight: 500;
+  line-height: 1.5;
+}

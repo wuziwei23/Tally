@@ -1,0 +1,82 @@
+.msc {
+  margin-bottom: 24px;
+}
+
+.msc__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.msc__card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.msc__month-row {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.msc__month-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 16px;
+  border-radius: var(--r-full);
+  border: 2px solid var(--border);
+  background: var(--bg-yellow);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.msc__main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 2px dashed #E5E0DA;
+}
+
+.msc__main-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-gray);
+}
+
+.msc__main-value {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.msc__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msc__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.msc__row-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-gray);
+}
+
+.msc__row-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark);
+  font-variant-numeric: tabular-nums;
+}

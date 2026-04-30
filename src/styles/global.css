@@ -1,0 +1,36 @@
+@import './variables.css';
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font);
+  color: var(--text-dark);
+  background: var(--bg-page);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+  background: var(--bg-page);
+}
+
+a { color: var(--text-dark); text-decoration: none; }
+button { font-family: inherit; border: none; background: none; cursor: pointer; font-size: inherit; }
+input, textarea { font-family: inherit; font-size: inherit; border: none; outline: none; }
+ul, ol { list-style: none; }
+img { max-width: 100%; display: block; }
+::-webkit-scrollbar { display: none; }

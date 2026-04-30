@@ -1,0 +1,39 @@
+:root {
+  /* Cream Card Theme */
+  --bg-page: #F7F3EE;
+  --bg-card: #FFFDF8;
+  --bg-pink: #EFB7BE;
+  --bg-green: #DDECCB;
+  --bg-yellow: #F3D99B;
+  --bg-orange: #F5C28A;
+
+  --text-dark: #222222;
+  --text-gray: #8C847C;
+  --text-green: #5B8F4E;
+  --text-red: #E96A5F;
+  --text-white: #FFFDF8;
+
+  --border: #222222;
+
+  /* Radius */
+  --r-sm: 14px;
+  --r-md: 20px;
+  --r-lg: 28px;
+  --r-xl: 36px;
+  --r-full: 999px;
+
+  /* Shadow */
+  --shadow: 5px 5px 0px rgba(0,0,0,0.12);
+  --shadow-sm: 3px 3px 0px rgba(0,0,0,0.10);
+
+  /* Border */
+  --border-width: 3px;
+
+  /* Font */
+  --font: 'PingFang SC', 'HarmonyOS Sans', 'MiSans', -apple-system, 'Helvetica Neue', sans-serif;
+
+  /* Spacing */
+  --pad: 20px;
+  --tab-height: 76px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
