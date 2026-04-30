@@ -1,0 +1,29 @@
+.hsec {
+  margin-bottom: 20px;
+}
+
+.hsec__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+.hsec__date {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.hsec__total {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-gray);
+}
+
+.hsec__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
