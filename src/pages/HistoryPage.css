@@ -47,3 +47,96 @@
   color: var(--text-gray);
   font-weight: 600;
 }
+
+/* Edit Modal */
+.hist__modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.hist__modal {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  width: 300px;
+  box-shadow: var(--shadow);
+}
+
+.hist__modal-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+
+.hist__modal-desc {
+  font-size: 13px;
+  color: var(--text-gray);
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.hist__modal-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--bg-page);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.hist__modal-currency {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.hist__modal-input {
+  flex: 1;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-dark);
+  background: none;
+  border: none;
+  font-family: var(--font);
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+.hist__modal-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.hist__modal-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--r-md);
+  border: var(--border-width) solid var(--border);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s;
+}
+
+.hist__modal-btn:active { transform: translateY(2px); }
+
+.hist__modal-btn--cancel {
+  background: var(--bg-card);
+  color: var(--text-dark);
+}
+
+.hist__modal-btn--confirm {
+  background: var(--bg-yellow);
+  color: var(--text-dark);
+}

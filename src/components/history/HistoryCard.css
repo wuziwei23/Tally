@@ -1,3 +1,43 @@
+.hcard-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+}
+
+/* Action buttons layer (underneath the card) */
+.hcard__actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  height: 100%;
+}
+
+.hcard__action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 70px;
+  border: none;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font);
+  color: #fff;
+  cursor: pointer;
+}
+
+.hcard__action--edit {
+  background: #5B8F4E;
+}
+
+.hcard__action--del {
+  background: var(--text-red);
+}
+
+/* Card layer (slides over actions) */
 .hcard {
   display: flex;
   align-items: center;
@@ -7,6 +47,10 @@
   border: var(--border-width) solid var(--border);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 1;
+  transition: transform 0.25s ease;
+  will-change: transform;
 }
 
 .hcard__icon {
@@ -50,6 +94,7 @@
   flex-shrink: 0;
 }
 
+/* Desktop hover delete (fallback) */
 .hcard__del {
   width: 28px;
   height: 28px;

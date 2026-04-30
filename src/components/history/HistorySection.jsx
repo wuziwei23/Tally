@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { formatCurrency } from '../../utils/format';
 import HistoryCard from './HistoryCard';
 import './HistorySection.css';
@@ -17,11 +18,19 @@ function formatDateLabel(dateStr) {
   return `${month}月${day}日`;
 }
 
-export default function HistorySection({ date, txns, type, onDelete }) {
+export default function HistorySection({ date, txns, type, onDelete, onEdit }) {
   const total = txns.reduce((s, t) => s + t.amount, 0);
+  const [swipedId, setSwipedId] = useState(null);
+
+  function handleSwipeStart(id) {
+    setSwipedId(id);
+  }
 
   return (
-    <div className="hsec">
+    <div className="hsec" onTouchStart={() => {
+      // Tap on section background closes any open card
+      if (swipedId) setSwipedId(null);
+    }}>
       <div className="hsec__header">
         <span className="hsec__date">{formatDateLabel(date)}</span>
         <span className="hsec__total">
@@ -30,7 +39,14 @@ export default function HistorySection({ date, txns, type, onDelete }) {
       </div>
       <div className="hsec__list">
         {txns.map(txn => (
-          <HistoryCard key={txn.id} txn={txn} onDelete={onDelete} />
+          <HistoryCard
+            key={txn.id}
+            txn={txn}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            isOpen={swipedId === txn.id}
+            onSwipeStart={handleSwipeStart}
+          />
         ))}
       </div>
     </div>

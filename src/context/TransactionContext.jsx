@@ -15,6 +15,10 @@ function transactionReducer(state, action) {
       return { ...state, transactions: state.transactions.filter(t => t.id !== action.payload) };
     case 'CLEAR':
       return { ...state, transactions: [] };
+    case 'UPDATE':
+      return { ...state, transactions: state.transactions.map(t =>
+        t.id === action.payload.id ? { ...t, ...action.payload.changes } : t
+      )};
     default:
       return state;
   }
@@ -53,6 +57,10 @@ export function TransactionProvider({ children }) {
   function clearAll() {
     dispatch({ type: 'CLEAR' });
     set(KEYS.TRANSACTIONS, []);
+  }
+
+  function updateTransaction(id, changes) {
+    dispatch({ type: 'UPDATE', payload: { id, changes } });
   }
 
   // Derived summary
@@ -95,7 +103,7 @@ export function TransactionProvider({ children }) {
   }, [state.transactions]);
 
   return (
-    <TransactionContext.Provider value={{ ...state, ...summary, addTransaction, deleteTransaction, clearAll }}>
+    <TransactionContext.Provider value={{ ...state, ...summary, addTransaction, deleteTransaction, updateTransaction, clearAll }}>
       {children}
     </TransactionContext.Provider>
   );

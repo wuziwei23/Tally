@@ -1,0 +1,34 @@
+.ctab {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-full);
+  padding: 4px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+}
+
+.ctab__btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: var(--r-full);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font);
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ctab__btn--active {
+  background: var(--bg-yellow);
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.ctab__btn:active {
+  transform: scale(0.97);
+}

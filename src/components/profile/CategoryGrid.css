@@ -1,0 +1,36 @@
+.catgrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.catgrid__item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 7px 10px 7px 16px;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.catgrid__icon {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.catgrid__name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
