@@ -1,66 +1,82 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { Bill, CategoryStat } from '../types'
-import { loadBills, saveBills } from '../services/storage'
+import { generateSampleTransactions } from '../data/sampleData'
+
+export type AnalyticsMode = 'month' | 'quarter' | 'year'
+
+export interface AnalyticsFilter {
+  mode: AnalyticsMode
+  year: number
+  month?: number
+  quarter?: number
+}
 
 function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
 }
 
-function isSameDay(a: string, b: string): boolean {
-  return a.slice(0, 10) === b.slice(0, 10)
-}
-
-function isSameMonth(a: string, b: string): boolean {
-  return a.slice(0, 7) === b.slice(0, 7)
-}
-
 interface BillState {
   bills: Bill[]
-  hydrated: boolean
+  hasHydrated: boolean
+  setHasHydrated: (v: boolean) => void
+  analyticsFilter: AnalyticsFilter
+  setAnalyticsFilter: (f: Partial<AnalyticsFilter>) => void
 
-  // actions
   addBill: (bill: Omit<Bill, 'id'>) => Bill
   deleteBill: (id: string) => void
   updateBill: (id: string, changes: Partial<Omit<Bill, 'id'>>) => void
   getBills: () => Bill[]
-
-  // internal
-  hydrate: () => void
 }
 
-export const useBillStore = create<BillState>((set, get) => ({
-  bills: [],
-  hydrated: false,
+export const useBillStore = create<BillState>()(
+  persist(
+    (set, get) => ({
+      bills: [],
+      hasHydrated: false,
+      setHasHydrated: (v) => set({ hasHydrated: v }),
+      analyticsFilter: {
+        mode: 'month' as AnalyticsMode,
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+      },
+      setAnalyticsFilter: (f: Partial<AnalyticsFilter>) =>
+        set({ analyticsFilter: { ...get().analyticsFilter, ...f } }),
 
-  hydrate: () => {
-    const bills = loadBills()
-    set({ bills, hydrated: true })
-  },
+      addBill: (input) => {
+        const bill: Bill = { ...input, id: generateId() }
+        const bills = [bill, ...get().bills]
+        set({ bills })
+        return bill
+      },
 
-  addBill: (input) => {
-    const bill: Bill = { ...input, id: generateId() }
-    const bills = [bill, ...get().bills]
-    set({ bills })
-    saveBills(bills)
-    return bill
-  },
+      deleteBill: (id) => {
+        set({ bills: get().bills.filter((b) => b.id !== id) })
+      },
 
-  deleteBill: (id) => {
-    const bills = get().bills.filter((b) => b.id !== id)
-    set({ bills })
-    saveBills(bills)
-  },
+      updateBill: (id, changes) => {
+        set({
+          bills: get().bills.map((b) =>
+            b.id === id ? { ...b, ...changes } : b
+          ),
+        })
+      },
 
-  updateBill: (id, changes) => {
-    const bills = get().bills.map((b) =>
-      b.id === id ? { ...b, ...changes } : b
-    )
-    set({ bills })
-    saveBills(bills)
-  },
-
-  getBills: () => get().bills,
-}))
+      getBills: () => get().bills,
+    }),
+    {
+      name: 'vibe-ledger-storage',
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          if (state.bills.length === 0) {
+            state.bills = generateSampleTransactions() as Bill[]
+          }
+          state.setHasHydrated(true)
+        }
+      },
+    }
+  )
+)
 
 // ── Selectors ──────────────────────────────────────────
 
@@ -69,33 +85,33 @@ function todayISO(): string {
   const y = d.getFullYear()
   const m = String(d.getMonth() + 1).padStart(2, '0')
   const day = String(d.getDate()).padStart(2, '0')
-  return `${y}-${m}-${day}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`
+  return `${y}-${m}-${day}`
 }
 
 export function selectTodayExpense(state: BillState): number {
   const today = todayISO()
   return state.bills
-    .filter((b) => b.type === 'expense' && isSameDay(b.createdAt, today))
+    .filter((b) => b.type === 'expense' && b.date === today)
     .reduce((sum, b) => sum + b.amount, 0)
 }
 
 export function selectMonthExpense(state: BillState): number {
-  const now = todayISO()
+  const month = todayISO().slice(0, 7)
   return state.bills
-    .filter((b) => b.type === 'expense' && isSameMonth(b.createdAt, now))
+    .filter((b) => b.type === 'expense' && b.date.startsWith(month))
     .reduce((sum, b) => sum + b.amount, 0)
 }
 
 export function selectMonthIncome(state: BillState): number {
-  const now = todayISO()
+  const month = todayISO().slice(0, 7)
   return state.bills
-    .filter((b) => b.type === 'income' && isSameMonth(b.createdAt, now))
+    .filter((b) => b.type === 'income' && b.date.startsWith(month))
     .reduce((sum, b) => sum + b.amount, 0)
 }
 
 export function selectCategoryStats(state: BillState): CategoryStat[] {
-  const now = todayISO()
-  const monthBills = state.bills.filter((b) => isSameMonth(b.createdAt, now))
+  const month = todayISO().slice(0, 7)
+  const monthBills = state.bills.filter((b) => b.date.startsWith(month))
 
   const map = new Map<string, { total: number; count: number }>()
   let grandTotal = 0

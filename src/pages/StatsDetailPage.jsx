@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTransactions } from '../context/TransactionContext';
+import { useBills } from '../hooks/useBill';
 import { formatCurrency } from '../utils/format';
 import SegmentedControl from '../components/stats/SegmentedControl';
 import './StatsDetailPage.css';
@@ -25,7 +25,7 @@ function getYear(dateStr) {
 }
 
 export default function StatsDetailPage() {
-  const { transactions } = useTransactions();
+  const transactions = useBills();
   const navigate = useNavigate();
   const [period, setPeriod] = useState('month');
 

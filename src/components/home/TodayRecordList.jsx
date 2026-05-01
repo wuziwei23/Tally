@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTransactions } from '../../context/TransactionContext';
+import { useBills } from '../../hooks/useBill';
 import { getCategoryById } from '../../data/categories';
 import { formatCurrency, getToday } from '../../utils/format';
 import CategoryIcon from '../common/CategoryIcon';
 import './TodayRecordList.css';
 
 export default function TodayRecordList() {
-  const { transactions } = useTransactions();
+  const transactions = useBills();
   const navigate = useNavigate();
 
   const today = getToday();

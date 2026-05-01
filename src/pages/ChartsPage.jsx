@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTransactions } from '../context/TransactionContext';
+import { useBills } from '../hooks/useBill';
 import SegmentedControl from '../components/stats/SegmentedControl';
 import StatsEmpty from '../components/stats/StatsEmpty';
 import StatsPanel from '../components/stats/StatsPanel';
@@ -19,7 +19,7 @@ const PERIOD_OPTIONS = [
 ];
 
 export default function ChartsPage() {
-  const { transactions } = useTransactions();
+  const transactions = useBills();
   const navigate = useNavigate();
   const [type, setType] = useState('expense');
   const [period, setPeriod] = useState('month');

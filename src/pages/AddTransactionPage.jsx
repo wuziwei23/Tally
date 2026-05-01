@@ -1,50 +1,83 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTransactions } from '../context/TransactionContext';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useBillStore } from '../store/useBillStore';
+import { useBillActions } from '../hooks/useBill';
 import { expenseCategories, incomeCategories } from '../data/categories';
 import { getToday } from '../utils/format';
 import CategoryIcon from '../components/common/CategoryIcon';
 import './AddTransactionPage.css';
 
 export default function AddTransactionPage() {
+  const [searchParams] = useSearchParams();
+  const editingId = searchParams.get('edit');
+  const bills = useBillStore((s) => s.bills);
+  const editingBill = editingId ? bills.find((b) => b.id === editingId) : null;
+
   const [type, setType] = useState('expense');
   const [amount, setAmount] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [date, setDate] = useState(getToday());
   const [note, setNote] = useState('');
-  const { addTransaction } = useTransactions();
+  const { addBill, updateBill } = useBillActions();
   const navigate = useNavigate();
+
+  // Pre-fill form in edit mode
+  useEffect(() => {
+    if (editingBill) {
+      setType(editingBill.type);
+      setAmount(String(editingBill.amount));
+      setCategoryId(editingBill.categoryId);
+      setDate(editingBill.date);
+      setNote(editingBill.note || '');
+    }
+  }, [editingBill]);
 
   const categories = type === 'expense' ? expenseCategories : incomeCategories;
 
   function handleSave() {
     const numAmount = parseFloat(amount);
     if (!numAmount || numAmount <= 0 || !categoryId) return;
-    addTransaction({
-      id: 'txn_' + Date.now(),
-      type,
-      categoryId,
-      amount: numAmount,
-      date,
-      note: note.trim(),
-      createdAt: new Date().toISOString(),
-    });
-    navigate('/');
+
+    if (editingBill) {
+      updateBill(editingBill.id, {
+        type,
+        categoryId,
+        amount: numAmount,
+        date,
+        note: note.trim(),
+      });
+      navigate('/history');
+    } else {
+      addBill({
+        type,
+        categoryId,
+        amount: numAmount,
+        date,
+        note: note.trim(),
+        createdAt: new Date().toISOString(),
+      });
+      navigate('/');
+    }
   }
 
   const canSave = parseFloat(amount) > 0 && categoryId;
+  const isEdit = !!editingBill;
+
+  function handleBack() {
+    navigate(isEdit ? '/history' : '/');
+  }
 
   return (
     <div className="page page--no-tabbar page-enter">
       <div className="add-pg">
         {/* Header */}
         <div className="add-pg__header">
-          <button className="add-pg__back" onClick={() => navigate('/')}>
+          <button className="add-pg__back" onClick={handleBack}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <polyline points="15 18 9 12 15 6"/>
             </svg>
           </button>
-          <h1 className="add-pg__title">记一笔</h1>
+          <h1 className="add-pg__title">{isEdit ? '编辑账单' : '记一笔'}</h1>
           <div style={{ width: 36 }} />
         </div>
 
@@ -129,13 +162,13 @@ export default function AddTransactionPage() {
           />
         </div>
 
-        {/* Add Button */}
+        {/* Submit Button */}
         <button
           className={`add-pg__submit ${canSave ? '' : 'add-pg__submit--disabled'}`}
           onClick={handleSave}
           disabled={!canSave}
         >
-          确认记账
+          {isEdit ? '保存修改' : '确认记账'}
         </button>
       </div>
     </div>

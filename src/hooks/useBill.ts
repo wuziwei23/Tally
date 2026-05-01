@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import {
   useBillStore,
   selectTodayExpense,
@@ -8,16 +8,9 @@ import {
 } from '../store/useBillStore'
 import type { Bill, CategoryStat } from '../types'
 
-// ── Hydration hook ────────────────────────────────────
-export function useHydrateStore(): boolean {
-  const hydrate = useBillStore((s) => s.hydrate)
-  const hydrated = useBillStore((s) => s.hydrated)
-
-  useEffect(() => {
-    if (!hydrated) hydrate()
-  }, [hydrated, hydrate])
-
-  return hydrated
+// ── Hydration ─────────────────────────────────────────
+export function useHydrated(): boolean {
+  return useBillStore((s) => s.hasHydrated)
 }
 
 // ── Bills list ────────────────────────────────────────

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { useTransactions } from '../../context/TransactionContext';
+import { useBills } from '../../hooks/useBill';
 import { formatCurrency, getMonthKey } from '../../utils/format';
 import './MonthSummaryCard.css';
 
 export default function MonthSummaryCard() {
-  const { transactions } = useTransactions();
+  const transactions = useBills();
 
   const stats = useMemo(() => {
     const now = new Date();

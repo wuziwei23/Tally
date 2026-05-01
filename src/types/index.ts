@@ -5,6 +5,7 @@ export interface Bill {
   type: BillType
   amount: number
   categoryId: string
+  date: string
   note?: string
   createdAt: string
 }

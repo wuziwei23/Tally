@@ -1,16 +1,16 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { useTransactions } from '../context/TransactionContext';
+import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useBills, useBillActions } from '../hooks/useBill';
 import HistoryTabs from '../components/history/HistoryTabs';
 import HistorySection from '../components/history/HistorySection';
-import { formatCurrency } from '../utils/format';
 import './HistoryPage.css';
 
 export default function HistoryPage() {
-  const { transactions, deleteTransaction, updateTransaction } = useTransactions();
+  const transactions = useBills();
+  const { deleteBill } = useBillActions();
+  const navigate = useNavigate();
   const [type, setType] = useState('expense');
-  const [editingTxn, setEditingTxn] = useState(null);
-  const [editAmount, setEditAmount] = useState('');
-  const inputRef = useRef(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   const grouped = useMemo(() => {
     const filtered = transactions.filter(t => t.type === type);
@@ -24,31 +24,29 @@ export default function HistoryPage() {
       .map(([date, txns]) => ({ date, txns }));
   }, [transactions, type]);
 
-  useEffect(() => {
-    if (editingTxn && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [editingTxn]);
-
   function handleEdit(txn) {
-    setEditingTxn(txn);
-    setEditAmount(String(txn.amount));
+    navigate(`/add?edit=${txn.id}`);
   }
 
-  function handleConfirmEdit() {
-    const num = parseFloat(editAmount);
-    if (!num || num <= 0) return;
-    updateTransaction(editingTxn.id, { amount: num });
-    setEditingTxn(null);
+  function handleRequestDelete(id) {
+    setDeletingId(id);
   }
+
+  function handleConfirmDelete() {
+    if (deletingId) {
+      deleteBill(deletingId);
+      setDeletingId(null);
+    }
+  }
+
+  const deletingBill = deletingId ? transactions.find(t => t.id === deletingId) : null;
 
   return (
     <div className="page page-enter">
       <div className="hist">
         <div className="hist__header">
           <h1 className="hist__title">历史</h1>
-          <p className="hist__sub">向左滑动可删除和修改金额</p>
+          <p className="hist__sub">向左滑动可删除和修改</p>
         </div>
 
         <HistoryTabs value={type} onChange={setType} />
@@ -65,36 +63,32 @@ export default function HistoryPage() {
               date={date}
               txns={txns}
               type={type}
-              onDelete={deleteTransaction}
+              onDelete={handleRequestDelete}
               onEdit={handleEdit}
             />
           ))
         )}
 
-        {/* Edit Amount Modal */}
-        {editingTxn && (
-          <div className="hist__modal-bg" onClick={() => setEditingTxn(null)}>
+        {/* Delete Confirm Modal */}
+        {deletingBill && (
+          <div className="hist__modal-bg" onClick={() => setDeletingId(null)}>
             <div className="hist__modal" onClick={e => e.stopPropagation()}>
-              <h3 className="hist__modal-title">修改金额</h3>
-              <p className="hist__modal-desc">{editingTxn.note || '交易记录'}</p>
-              <div className="hist__modal-input-row">
-                <span className="hist__modal-currency">¥</span>
-                <input
-                  ref={inputRef}
-                  className="hist__modal-input"
-                  type="text"
-                  inputMode="decimal"
-                  value={editAmount}
-                  onChange={e => {
-                    const v = e.target.value;
-                    if (/^\d*\.?\d{0,2}$/.test(v) || v === '') setEditAmount(v);
-                  }}
-                  onKeyDown={e => { if (e.key === 'Enter') handleConfirmEdit(); }}
-                />
-              </div>
+              <h3 className="hist__modal-title">确认删除</h3>
+              <p className="hist__modal-desc">确认删除这条记录？</p>
               <div className="hist__modal-btns">
-                <button className="hist__modal-btn hist__modal-btn--cancel" onClick={() => setEditingTxn(null)}>取消</button>
-                <button className="hist__modal-btn hist__modal-btn--confirm" onClick={handleConfirmEdit}>确认</button>
+                <button
+                  className="hist__modal-btn hist__modal-btn--cancel"
+                  onClick={() => setDeletingId(null)}
+                >
+                  取消
+                </button>
+                <button
+                  className="hist__modal-btn hist__modal-btn--confirm"
+                  onClick={handleConfirmDelete}
+                  style={{ background: '#FF3B30', color: '#fff' }}
+                >
+                  确认删除
+                </button>
               </div>
             </div>
           </div>
