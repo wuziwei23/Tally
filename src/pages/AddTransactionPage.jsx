@@ -94,10 +94,11 @@ export default function AddTransactionPage() {
                 type="button"
               >
                 <span className="add-pg__cat-icon" style={{
-                  background: categoryId === cat.id ? cat.color : cat.color + '25',
-                  color: cat.color,
+                  background: categoryId === cat.id ? cat.color : cat.color + '22',
+                  color: categoryId === cat.id ? '#fff' : cat.color,
+                  borderColor: categoryId === cat.id ? cat.color : undefined,
                 }}>
-                  <CategoryIcon categoryId={cat.id} size={20} color={cat.color} />
+                  <CategoryIcon categoryId={cat.id} size={20} color={categoryId === cat.id ? '#fff' : cat.color} />
                 </span>
                 <span className="add-pg__cat-name">{cat.name}</span>
               </button>
