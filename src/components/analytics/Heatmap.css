@@ -1,0 +1,499 @@
+/* ── Heatmap Card ──────────────────────────────────── */
+.hm__card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.hm__card:hover {
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.14);
+  transform: translateY(-1px);
+}
+
+.hm__empty {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--text-gray);
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Summary ────────────────────────────────────────── */
+.hm__summary {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 2px dashed #E5E0DA;
+}
+
+.hm__summary-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hm__summary-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.hm__summary-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-gray);
+}
+
+/* ── Month Calendar ─────────────────────────────────── */
+.hm__cal-scroll {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding: 4px 4px 12px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+
+.hm__cal-month {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+.hm__cal-month-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.hm__cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 38px);
+  gap: 4px;
+  padding: 2px;
+}
+
+.hm__cal-grid--quarter {
+  grid-template-columns: repeat(7, 28px);
+  gap: 3px;
+}
+
+.hm__cal-grid--year {
+  grid-template-columns: repeat(7, 28px);
+  gap: 3px;
+}
+
+.hm__cal-dow {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-gray);
+}
+
+.hm__cal-dow--mini {
+  height: 18px;
+  font-size: 9px;
+}
+
+.hm__cal-cell {
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.hm__cal-cell--day {
+  width: 38px;
+  height: 38px;
+  border: 2px solid var(--border);
+  outline: 2px solid transparent;
+  outline-offset: -1px;
+  transition: outline-color 0.15s;
+}
+
+.hm__cal-cell--day:hover {
+  outline-color: rgba(34, 34, 34, 0.4);
+}
+
+.hm__cal-cell--active {
+  outline: 2.5px solid var(--text-dark) !important;
+  outline-offset: 1px !important;
+  z-index: 1;
+}
+
+.hm__cal-cell--empty,
+.hm__cal-cell--quarter-empty {
+  border: none;
+  cursor: default;
+  background: transparent !important;
+}
+
+.hm__cal-cell--quarter-empty {
+  width: 28px;
+  height: 28px;
+}
+
+.hm__cal-cell--quarter {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  outline: 2px solid transparent;
+  outline-offset: -1px;
+  transition: outline-color 0.15s;
+}
+
+.hm__cal-cell--quarter:hover {
+  outline-color: rgba(34, 34, 34, 0.4);
+}
+
+.hm__cal-num {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.hm__cal-num--mini {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* Crown badge */
+.hm__cal-crown {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 12px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+  z-index: 2;
+}
+
+.hm__cal-crown--mini {
+  top: -4px;
+  right: -4px;
+  font-size: 10px;
+}
+
+/* Flame badge */
+.hm__cal-flame {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  font-size: 10px;
+  line-height: 1;
+  z-index: 2;
+}
+
+.hm__cal-flame--mini {
+  top: -3px;
+  left: -3px;
+  font-size: 8px;
+}
+
+/* ── Quarter Grid ────────────────────────────────────── */
+.hm__quarter-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hm__quarter-card {
+  background: var(--bg-page);
+  border: 2px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 14px;
+}
+
+.hm__quarter-card-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* ── Year Grid ───────────────────────────────────────── */
+.hm__year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.hm__year-card {
+  background: var(--bg-page);
+  border: 2px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.hm__year-card:hover {
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.08);
+}
+
+.hm__year-card--expanded {
+  grid-column: span 3;
+}
+
+.hm__year-card-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-dark);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+/* Mini dots for collapsed year view */
+.hm__year-mini-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: center;
+}
+
+.hm__year-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 1.5px;
+  border: 0.5px solid var(--border);
+}
+
+.hm__year-dot--empty {
+  background: transparent !important;
+  border: none;
+}
+
+/* ── Legend ──────────────────────────────────────────── */
+.hm__legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.hm__legend-label {
+  font-size: 10px;
+  color: var(--text-gray);
+  font-weight: 600;
+  margin: 0 2px;
+}
+
+.hm__legend-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  border: 1.5px solid var(--border);
+}
+
+/* ── Detail Drawer ───────────────────────────────────── */
+.hm__drawer-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 300;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.hm__drawer {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-bottom: none;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 16px var(--pad) calc(var(--safe-bottom) + 20px);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.hm__drawer-handle {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  background: #D5D0CA;
+  margin: 0 auto 16px;
+}
+
+.hm__drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.hm__drawer-date {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.hm__drawer-total {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-red);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Category breakdown */
+.hm__drawer-cats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 2px dashed #E5E0DA;
+}
+
+.hm__drawer-cat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.hm__drawer-cat-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
+.hm__drawer-cat-name {
+  flex: 1;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.hm__drawer-cat-amt {
+  color: var(--text-dark);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+.hm__drawer-cat-pct {
+  color: var(--text-gray);
+  font-weight: 700;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
+  text-align: right;
+}
+
+/* Bill list */
+.hm__drawer-bills-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-gray);
+  margin-bottom: 10px;
+}
+
+.hm__drawer-bill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F0ECE6;
+}
+
+.hm__drawer-bill:last-child {
+  border-bottom: none;
+}
+
+.hm__drawer-bill-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.hm__drawer-bill-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hm__drawer-bill-cat {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.hm__drawer-bill-note {
+  font-size: 12px;
+  color: var(--text-gray);
+}
+
+.hm__drawer-bill-amt {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-red);
+  font-variant-numeric: tabular-nums;
+}
+
+.hm__drawer-empty {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-gray);
+  font-size: 14px;
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (min-width: 600px) {
+  .hm__cal-grid {
+    grid-template-columns: repeat(7, 44px);
+    gap: 5px;
+  }
+
+  .hm__cal-cell--day {
+    width: 44px;
+    height: 44px;
+  }
+
+  .hm__cal-grid--quarter,
+  .hm__cal-grid--year {
+    grid-template-columns: repeat(7, 34px);
+    gap: 4px;
+  }
+
+  .hm__cal-cell--quarter,
+  .hm__cal-cell--quarter-empty {
+    width: 34px;
+    height: 34px;
+  }
+
+  .hm__year-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .hm__year-card--expanded {
+    grid-column: span 4;
+  }
+}

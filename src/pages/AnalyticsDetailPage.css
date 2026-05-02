@@ -340,9 +340,9 @@
 /* Calendar scroll container */
 .adet__cal-scroll {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   overflow-x: auto;
-  padding-bottom: 8px;
+  padding: 4px 4px 12px;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
 }
@@ -364,8 +364,9 @@
 /* 7-column grid: Mon Tue Wed Thu Fri Sat Sun */
 .adet__cal-grid {
   display: grid;
-  grid-template-columns: repeat(7, 36px);
-  gap: 3px;
+  grid-template-columns: repeat(7, 38px);
+  gap: 4px;
+  padding: 2px;
 }
 
 .adet__cal-dow {
@@ -373,49 +374,61 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-gray);
 }
 
 .adet__cal-cell {
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.15s, box-shadow 0.15s;
   position: relative;
+  transition: outline-color 0.15s;
 }
 
 .adet__cal-cell--day {
-  border: 1.5px solid var(--border);
+  border: 2px solid var(--border);
   cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -1px;
 }
 
 .adet__cal-cell--day:hover {
-  transform: scale(1.12);
-  z-index: 1;
-  box-shadow: 0 0 0 2px var(--border);
+  outline-color: rgba(34, 34, 34, 0.4);
 }
 
 .adet__cal-cell--active {
-  transform: scale(1.12);
+  outline: 2.5px solid var(--text-dark);
+  outline-offset: 1px;
   z-index: 1;
-  box-shadow: 0 0 0 2px var(--text-dark);
 }
 
 .adet__cal-cell--empty {
   border: none;
   cursor: default;
+  background: transparent !important;
 }
 
 .adet__cal-num {
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--text-dark);
   font-variant-numeric: tabular-nums;
+}
+
+/* Crown badge on max expense day */
+.adet__cal-crown {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 12px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+  z-index: 2;
 }
 
 /* Legend */
@@ -654,16 +667,12 @@
   }
 
   .adet__cal-grid {
-    grid-template-columns: repeat(7, 42px);
-    gap: 4px;
+    grid-template-columns: repeat(7, 44px);
+    gap: 5px;
   }
 
   .adet__cal-cell {
-    width: 42px;
-    height: 42px;
-  }
-
-  .adet__cal-num {
-    font-size: 13px;
+    width: 44px;
+    height: 44px;
   }
 }

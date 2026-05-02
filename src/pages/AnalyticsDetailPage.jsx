@@ -8,6 +8,7 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell,
 } from 'recharts';
+import HeatmapCard from '../components/analytics/HeatmapCard';
 import './AnalyticsDetailPage.css';
 
 const MODE_OPTIONS = [
@@ -103,211 +104,6 @@ function ModeSelector({ value, onChange }) {
           {label}
         </button>
       ))}
-    </div>
-  );
-}
-
-// ── Heatmap Section ────────────────────────────────────
-
-const MONTH_NAMES_SHORT = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-const DOW_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
-const HEAT_COLORS = ['#FFFDF8', '#F3D99B', '#F5C28A', '#EFB7BE', '#E96A5F'];
-
-function heatLevel(amount) {
-  if (amount <= 0) return 0;
-  if (amount <= 50) return 1;
-  if (amount <= 150) return 2;
-  if (amount <= 300) return 3;
-  return 4;
-}
-
-function HeatSection({ bills, filter }) {
-  const [activeDay, setActiveDay] = useState(null);
-
-  const { months, summary } = useMemo(() => {
-    const { start, end } = filterDateRange(filter);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const endClamped = end > today ? today : end;
-
-    if (start > endClamped) {
-      return { months: [], summary: null };
-    }
-
-    // Aggregate daily expenses + top category per day
-    const expenseMap = {};
-    const topCatMap = {};
-    for (const b of bills) {
-      if (b.type !== 'expense') continue;
-      if (b.date >= fmt(start) && b.date <= fmt(endClamped)) {
-        expenseMap[b.date] = (expenseMap[b.date] || 0) + b.amount;
-        const cat = getCategoryById(b.categoryId);
-        if (!topCatMap[b.date]) topCatMap[b.date] = {};
-        topCatMap[b.date][cat.name] = (topCatMap[b.date][cat.name] || 0) + b.amount;
-      }
-    }
-
-    // Summary stats
-    const activeDays = Object.keys(expenseMap).length;
-    let maxDay = null;
-    let maxAmt = 0;
-    for (const [d, a] of Object.entries(expenseMap)) {
-      if (a > maxAmt) { maxAmt = a; maxDay = d; }
-    }
-    const totalExpense = Object.values(expenseMap).reduce((s, v) => s + v, 0);
-    const avg = activeDays > 0 ? totalExpense / activeDays : 0;
-    const sum = { activeDays, maxDay, maxAmount: maxAmt, avg };
-
-    // Build calendar grids per month
-    const monthList = [];
-    let cur = new Date(start.getFullYear(), start.getMonth(), 1);
-    const monthEnd = new Date(endClamped.getFullYear(), endClamped.getMonth(), 1);
-
-    while (cur <= monthEnd) {
-      const year = cur.getFullYear();
-      const month = cur.getMonth();
-      const firstOfMonth = new Date(year, month, 1);
-      const lastOfMonth = new Date(year, month + 1, 0);
-      const actualEnd = lastOfMonth > endClamped ? endClamped : lastOfMonth;
-      const actualStart = firstOfMonth < start ? start : firstOfMonth;
-
-      // Monday-based dow: 0=Mon ... 6=Sun
-      const startDow = (actualStart.getDay() + 6) % 7;
-
-      // Collect day cells
-      const dayCells = {};
-      const totalDays = daysBetween(actualStart, actualEnd) + 1;
-      for (let i = 0; i < totalDays; i++) {
-        const d = new Date(actualStart);
-        d.setDate(d.getDate() + i);
-        const ds = fmt(d);
-        const amt = expenseMap[ds] || 0;
-        const topCats = topCatMap[ds] ? Object.entries(topCatMap[ds]).sort((a, b) => b[1] - a[1]) : [];
-        dayCells[i] = {
-          day: d.getDate(),
-          date: ds,
-          amount: amt,
-          level: heatLevel(amt),
-          topCat: topCats.length > 0 ? topCats[0][0] : null,
-        };
-      }
-
-      // Build week rows
-      const weeks = [];
-      let currentWeek = new Array(7).fill(null);
-
-      // Fill leading empty cells
-      for (let d = 0; d < startDow; d++) {
-        currentWeek[d] = null;
-      }
-
-      // Place each day
-      for (let i = 0; i < totalDays; i++) {
-        const pos = (startDow + i) % 7;
-        if (pos === 0 && i > 0) {
-          weeks.push(currentWeek);
-          currentWeek = new Array(7).fill(null);
-        }
-        currentWeek[pos] = dayCells[i];
-      }
-      // Push last week and pad trailing nulls
-      weeks.push(currentWeek);
-
-      monthList.push({
-        year,
-        month,
-        label: `${year}年${month + 1}月`,
-        weeks,
-      });
-
-      cur = new Date(year, month + 1, 1);
-    }
-
-    return { months: monthList, summary: sum };
-  }, [bills, filter]);
-
-  if (months.length === 0) {
-    return <div className="adet__empty">暂无热力数据</div>;
-  }
-
-  return (
-    <div className="adet__card">
-      {/* Summary bar */}
-      <div className="adet__heat-summary">
-        <div className="adet__heat-stat">
-          <span className="adet__heat-stat-val">{summary.activeDays}</span>
-          <span className="adet__heat-stat-lbl">活跃天数</span>
-        </div>
-        <div className="adet__heat-stat">
-          <span className="adet__heat-stat-val">{summary.maxDay ? summary.maxDay.slice(5) : '—'}</span>
-          <span className="adet__heat-stat-lbl">最高消费日</span>
-        </div>
-        <div className="adet__heat-stat">
-          <span className="adet__heat-stat-val">¥{formatCurrency(summary.avg)}</span>
-          <span className="adet__heat-stat-lbl">日均消费</span>
-        </div>
-      </div>
-
-      {/* Calendar months */}
-      <div className="adet__cal-scroll">
-        {months.map((m, mi) => (
-          <div key={mi} className="adet__cal-month">
-            <div className="adet__cal-month-title">{m.label}</div>
-
-            {/* DOW header */}
-            <div className="adet__cal-grid">
-              {DOW_LABELS.map((lbl, di) => (
-                <div key={di} className="adet__cal-dow">{lbl}</div>
-              ))}
-
-              {/* Day cells */}
-              {m.weeks.map((week, wi) =>
-                week.map((cell, ci) => (
-                  <div
-                    key={`${wi}-${ci}`}
-                    className={`adet__cal-cell ${cell ? 'adet__cal-cell--day' : 'adet__cal-cell--empty'} ${cell && activeDay === cell.date ? 'adet__cal-cell--active' : ''}`}
-                    style={cell ? { background: HEAT_COLORS[cell.level] } : undefined}
-                    onClick={() => cell && setActiveDay(activeDay === cell.date ? null : cell.date)}
-                  >
-                    {cell && <span className="adet__cal-num">{cell.day}</span>}
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Legend */}
-      <div className="adet__heat-legend">
-        <span className="adet__heat-legend-label">少</span>
-        {HEAT_COLORS.map((c, i) => (
-          <span key={i} className="adet__heat-legend-cell" style={{ background: c }} />
-        ))}
-        <span className="adet__heat-legend-label">多</span>
-      </div>
-
-      {/* Detail on tap */}
-      {activeDay && (
-        <div className="adet__heat-detail">
-          <span className="adet__heat-detail-date">{activeDay}</span>
-          {(() => {
-            const amt = bills
-              .filter(b => b.type === 'expense' && b.date === activeDay)
-              .reduce((s, b) => s + b.amount, 0);
-            const cats = bills
-              .filter(b => b.type === 'expense' && b.date === activeDay)
-              .reduce((m, b) => { const c = getCategoryById(b.categoryId); m[c.name] = (m[c.name] || 0) + b.amount; return m; }, {});
-            const topCat = Object.entries(cats).sort((a, b) => b[1] - a[1])[0];
-            return (
-              <>
-                <span className="adet__heat-detail-amt">¥{formatCurrency(amt)}</span>
-                <span className="adet__heat-detail-cat">{topCat ? topCat[0] : '无消费'}</span>
-              </>
-            );
-          })()}
-        </div>
-      )}
     </div>
   );
 }
@@ -780,7 +576,7 @@ export default function AnalyticsDetailPage() {
             <span className="adet__section-icon" style={{ background: '#F5C28A' }}></span>
             消费热力
           </h2>
-          <HeatSection bills={bills} filter={filter} />
+          <HeatmapCard />
         </div>
 
         {/* Section 5: AI Summary */}
