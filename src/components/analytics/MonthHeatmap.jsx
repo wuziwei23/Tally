@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion'
 import { HEAT_COLORS, DOW_LABELS } from '../../hooks/useHeatmapData'
-import { formatCurrency } from '../../utils/format'
 
 export default function MonthHeatmap({ months, selectedDate, onSelect }) {
   if (months.length === 0) return null
 
   return (
-    <div className="hm__cal-scroll">
+    <>
       {months.map((m, mi) => (
         <div key={mi} className="hm__cal-month">
           <div className="hm__cal-month-title">{m.label}</div>
@@ -30,7 +29,7 @@ export default function MonthHeatmap({ months, selectedDate, onSelect }) {
                     whileTap={{ scale: 0.94 }}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: mi * 0.05 + (wi * 7 + ci) * 0.008, duration: 0.25 }}
+                    transition={{ delay: (wi * 7 + ci) * 0.01, duration: 0.25 }}
                   >
                     <span className="hm__cal-num">{cell.day}</span>
                     {cell.isMax && <span className="hm__cal-crown" title="最高消费日">👑</span>}
@@ -42,6 +41,6 @@ export default function MonthHeatmap({ months, selectedDate, onSelect }) {
           </div>
         </div>
       ))}
-    </div>
+    </>
   )
 }

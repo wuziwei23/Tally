@@ -61,14 +61,14 @@ export default function YearHeatmap({ months, selectedDate, onSelect }) {
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                   style={{ overflow: 'hidden' }}
                 >
-                  <div className="hm__cal-grid hm__cal-grid--year">
+                  <div className="hm__cal-grid">
                     {DOW_LABELS.map((lbl, di) => (
                       <div key={di} className="hm__cal-dow hm__cal-dow--mini">{lbl}</div>
                     ))}
                     {m.weeks.map((week, wi) =>
                       week.map((cell, ci) => {
                         if (!cell) {
-                          return <div key={`${wi}-${ci}`} className="hm__cal-cell hm__cal-cell--quarter-empty" />
+                          return <div key={`${wi}-${ci}`} className="hm__cal-cell hm__cal-cell--empty" />
                         }
                         const isActive = selectedDate === cell.date
                         return (

@@ -3,7 +3,7 @@
   background: var(--bg-card);
   border: var(--border-width) solid var(--border);
   border-radius: var(--r-lg);
-  padding: 20px;
+  padding: 16px;
   box-shadow: var(--shadow);
   transition: box-shadow 0.2s, transform 0.2s;
 }
@@ -28,7 +28,7 @@
 /* ── Summary ────────────────────────────────────────── */
 .hm__summary {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 16px;
   padding-bottom: 14px;
   border-bottom: 2px dashed #E5E0DA;
@@ -55,59 +55,25 @@
   color: var(--text-gray);
 }
 
-/* ── Month Calendar ─────────────────────────────────── */
-.hm__cal-scroll {
-  display: flex;
-  gap: 24px;
-  overflow-x: auto;
-  padding: 4px 4px 12px;
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x proximity;
-}
-
-.hm__cal-month {
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  min-width: 0;
-}
-
-.hm__cal-month-title {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--text-dark);
-  margin-bottom: 8px;
-  text-align: center;
-}
-
+/* ── Shared Grid System ─────────────────────────────── */
 .hm__cal-grid {
   display: grid;
-  grid-template-columns: repeat(7, 38px);
-  gap: 4px;
-  padding: 2px;
-}
-
-.hm__cal-grid--quarter {
-  grid-template-columns: repeat(7, 28px);
-  gap: 3px;
-}
-
-.hm__cal-grid--year {
-  grid-template-columns: repeat(7, 28px);
-  gap: 3px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
 }
 
 .hm__cal-dow {
-  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
   font-weight: 700;
   color: var(--text-gray);
+  aspect-ratio: 1 / 1;
 }
 
 .hm__cal-dow--mini {
-  height: 18px;
   font-size: 9px;
 }
 
@@ -118,11 +84,11 @@
   justify-content: center;
   position: relative;
   cursor: pointer;
+  aspect-ratio: 1 / 1;
+  width: 100%;
 }
 
 .hm__cal-cell--day {
-  width: 38px;
-  height: 38px;
   border: 2px solid var(--border);
   outline: 2px solid transparent;
   outline-offset: -1px;
@@ -146,14 +112,7 @@
   background: transparent !important;
 }
 
-.hm__cal-cell--quarter-empty {
-  width: 28px;
-  height: 28px;
-}
-
 .hm__cal-cell--quarter {
-  width: 28px;
-  height: 28px;
   border: 1.5px solid var(--border);
   border-radius: 7px;
   outline: 2px solid transparent;
@@ -210,40 +169,62 @@
   font-size: 8px;
 }
 
-/* ── Quarter Grid ────────────────────────────────────── */
-.hm__quarter-grid {
+/* ── Month Calendar ─────────────────────────────────── */
+.hm__cal-month {
+  width: 100%;
+}
+
+.hm__cal-month-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* ── Quarter Accordion Stack ────────────────────────── */
+.hm__quarter-stack {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .hm__quarter-card {
   background: var(--bg-page);
   border: 2px solid var(--border);
   border-radius: var(--r-md);
-  padding: 14px;
+  padding: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.hm__quarter-card:hover {
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.08);
 }
 
 .hm__quarter-card-title {
   font-size: 13px;
   font-weight: 800;
   color: var(--text-dark);
-  margin-bottom: 10px;
-  text-align: center;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
-/* ── Year Grid ───────────────────────────────────────── */
+/* ── Year 3×4 Grid ─────────────────────────────────── */
 .hm__year-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .hm__year-card {
   background: var(--bg-page);
   border: 2px solid var(--border);
   border-radius: var(--r-md);
-  padding: 10px;
+  padding: 8px;
   cursor: pointer;
   transition: box-shadow 0.2s;
 }
@@ -265,7 +246,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 /* Mini dots for collapsed year view */
@@ -294,7 +275,7 @@
   align-items: center;
   gap: 4px;
   justify-content: flex-end;
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .hm__legend-label {
@@ -305,8 +286,8 @@
 }
 
 .hm__legend-cell {
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
   border-radius: 3px;
   border: 1.5px solid var(--border);
 }
@@ -468,25 +449,7 @@
 /* ── Responsive ─────────────────────────────────────── */
 @media (min-width: 600px) {
   .hm__cal-grid {
-    grid-template-columns: repeat(7, 44px);
-    gap: 5px;
-  }
-
-  .hm__cal-cell--day {
-    width: 44px;
-    height: 44px;
-  }
-
-  .hm__cal-grid--quarter,
-  .hm__cal-grid--year {
-    grid-template-columns: repeat(7, 34px);
-    gap: 4px;
-  }
-
-  .hm__cal-cell--quarter,
-  .hm__cal-cell--quarter-empty {
-    width: 34px;
-    height: 34px;
+    gap: 8px;
   }
 
   .hm__year-grid {
