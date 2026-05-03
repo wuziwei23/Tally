@@ -15,9 +15,9 @@ export default function YearHeatmap({ months, selectedDate, onSelect }) {
           <motion.div
             key={mi}
             className={`hm__year-card ${isExpanded ? 'hm__year-card--expanded' : ''}`}
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: mi * 0.04, duration: 0.3 }}
+            transition={{ delay: mi * 0.05, type: 'spring', stiffness: 300, damping: 30, mass: 0.8 }}
             layout
           >
             <div
@@ -58,7 +58,7 @@ export default function YearHeatmap({ months, selectedDate, onSelect }) {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 28, mass: 0.8 }}
                   style={{ overflow: 'hidden' }}
                 >
                   <div className="hm__cal-grid">
@@ -77,11 +77,11 @@ export default function YearHeatmap({ months, selectedDate, onSelect }) {
                             className={`hm__cal-cell hm__cal-cell--quarter ${isActive ? 'hm__cal-cell--active' : ''}`}
                             style={{ background: HEAT_COLORS[cell.level] }}
                             onClick={() => onSelect(cell.date)}
-                            initial={{ opacity: 0, scale: 0.5 }}
+                            initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: (wi * 7 + ci) * 0.006, duration: 0.2 }}
-                            whileHover={{ scale: 1.12 }}
-                            whileTap={{ scale: 0.9 }}
+                            transition={{ delay: (wi * 7 + ci) * 0.008, type: 'spring', stiffness: 400, damping: 28, mass: 0.6 }}
+                            whileHover={{ y: -2 }}
+                            whileTap={{ scale: 0.98 }}
                           >
                             <span className="hm__cal-num hm__cal-num--mini">{cell.day}</span>
                             {cell.isMax && <span className="hm__cal-crown hm__cal-crown--mini">👑</span>}
