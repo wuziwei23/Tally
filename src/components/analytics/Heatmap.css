@@ -311,29 +311,39 @@
 .hm__mini-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
+  gap: 2px;
 }
 
 .hm__mini-cal-cell {
   aspect-ratio: 1 / 1;
-  border-radius: 2px;
-  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  border: 2px solid #2A2A2A;
   width: 100%;
+  transition: all .22s cubic-bezier(.22,1,.36,1);
+  box-shadow: 0 1px 0 rgba(0,0,0,.03);
+}
+
+.hm__mini-cal-cell:hover {
+  transform: translateY(-1px);
 }
 
 .hm__mini-cal-cell--empty {
   background: transparent !important;
   border: none;
+  box-shadow: none;
 }
 
-/* Square cards for collapsed state */
+.hm__mini-cal-cell--selected {
+  outline: 2.5px solid var(--text-dark);
+  outline-offset: 1px;
+}
+
+/* Cards: let content determine height for full month display */
 .hm__year-card:not(.hm__year-card--expanded) {
-  aspect-ratio: 1 / 1;
   overflow: hidden;
 }
 
 .hm__quarter-card:not(.hm__quarter-card--expanded) {
-  aspect-ratio: 1 / 1;
   overflow: hidden;
 }
 

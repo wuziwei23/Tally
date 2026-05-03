@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { Bill } from '../types'
 import { getCategoryById } from '../data/categories'
 
-export const HEAT_COLORS = ['#FFFDF8', '#FFF3D6', '#F5D98A', '#F5A962', '#E86B5A']
+export const HEAT_COLORS = ['#FBFAF6', '#F9E9B9', '#F3D97B', '#EEB160', '#E86F5A']
 export const DOW_LABELS = ['一', '二', '三', '四', '五', '六', '日']
 
 export interface DayCell {
