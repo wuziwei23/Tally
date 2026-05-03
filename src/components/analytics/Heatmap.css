@@ -184,9 +184,27 @@
 
 /* ── Quarter Accordion Stack ────────────────────────── */
 .hm__quarter-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* 1 month: single card centered */
+.hm__quarter-card:only-child {
+  max-width: 50%;
+  justify-self: center;
+}
+
+/* 3 months: third card centered on second row */
+.hm__quarter-card:nth-child(3):last-child {
+  grid-column: 1 / -1;
+  max-width: 50%;
+  justify-self: center;
+}
+
+/* Expanded card spans full width */
+.hm__quarter-card--expanded {
+  grid-column: span 2;
 }
 
 .hm__quarter-card {
