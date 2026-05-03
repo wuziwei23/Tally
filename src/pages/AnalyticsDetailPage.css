@@ -269,10 +269,23 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: var(--font);
   font-size: 14px;
   font-weight: 600;
   padding-bottom: 12px;
   border-bottom: 2px dashed #E5E0DA;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.adet__compare-item:active {
+  transform: scale(0.98);
+  opacity: 0.78;
 }
 
 .adet__compare-item:last-child {
@@ -305,6 +318,168 @@
   min-width: 52px;
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+/* ── Category Bill Drawer ───────────────────────────── */
+.adet__cat-drawer-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 320;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.adet__cat-drawer {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-bottom: none;
+  border-radius: 34px 34px 0 0;
+  overflow: hidden;
+  isolation: isolate;
+  width: 100%;
+  max-width: 480px;
+  max-height: min(72vh, 620px);
+  padding: 16px var(--pad) calc(var(--safe-bottom) + 20px);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.adet__cat-drawer-handle {
+  width: 56px;
+  height: 6px;
+  border-radius: 999px;
+  background: #D5D0CA;
+  margin: 14px auto 18px;
+  opacity: 0.22;
+}
+
+.adet__cat-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.adet__cat-drawer-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.adet__cat-drawer-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
+.adet__cat-drawer-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.adet__cat-drawer-sub {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray);
+  margin-top: 2px;
+}
+
+.adet__cat-drawer-total {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-red);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.adet__cat-drawer-bills {
+  max-height: calc(min(72vh, 620px) - 128px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.adet__cat-drawer-bills::-webkit-scrollbar {
+  display: none;
+}
+
+.adet__cat-drawer-bill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F0ECE6;
+  opacity: 0;
+  animation: drawerBillIn 0.22s ease-out forwards;
+}
+
+.adet__cat-drawer-bill:last-child {
+  border-bottom: none;
+}
+
+.adet__cat-drawer-bill-date {
+  width: 46px;
+  height: 32px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-page);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-gray);
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.adet__cat-drawer-bill-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.adet__cat-drawer-bill-note {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adet__cat-drawer-bill-meta {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray);
+}
+
+.adet__cat-drawer-bill-amt {
+  color: var(--text-red);
+  font-size: 14px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.adet__cat-drawer-empty {
+  text-align: center;
+  padding: 22px 20px;
+  color: var(--text-gray);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 /* ── Section 4: Calendar Heatmap ─────────────────────── */
@@ -654,6 +829,17 @@
 @keyframes slideUp {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
+}
+
+@keyframes drawerBillIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Utilities ──────────────────────────────────────── */

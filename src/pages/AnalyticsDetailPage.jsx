@@ -243,12 +243,61 @@ function BottomSheet({ open, onClose, filter, onConfirm }) {
 
 // ── Main Page ──────────────────────────────────────────
 
+function CategoryBillDrawer({ category, bills, onClose }) {
+  if (!category) return null;
+
+  const total = bills.reduce((sum, bill) => sum + bill.amount, 0);
+  const sortedBills = [...bills].sort((a, b) => b.date.localeCompare(a.date));
+
+  return (
+    <div className="adet__cat-drawer-bg" onClick={onClose}>
+      <div className="adet__cat-drawer" onClick={e => e.stopPropagation()}>
+        <div className="adet__cat-drawer-handle" />
+        <div className="adet__cat-drawer-header">
+          <div className="adet__cat-drawer-title-wrap">
+            <span className="adet__cat-drawer-dot" style={{ background: category.color }} />
+            <div>
+              <h3 className="adet__cat-drawer-title">{category.name}</h3>
+              <p className="adet__cat-drawer-sub">本周期账单明细</p>
+            </div>
+          </div>
+          <span className="adet__cat-drawer-total">¥{formatCurrency(total)}</span>
+        </div>
+
+        {sortedBills.length > 0 ? (
+          <div className="adet__cat-drawer-bills">
+            {sortedBills.map((bill, index) => (
+              <div
+                key={bill.id}
+                className="adet__cat-drawer-bill"
+                style={{ animationDelay: `${index * 0.03}s` }}
+              >
+                <div className="adet__cat-drawer-bill-date">
+                  <span>{bill.date.slice(5)}</span>
+                </div>
+                <div className="adet__cat-drawer-bill-info">
+                  <span className="adet__cat-drawer-bill-note">{bill.note || category.name}</span>
+                  <span className="adet__cat-drawer-bill-meta">{bill.date}</span>
+                </div>
+                <span className="adet__cat-drawer-bill-amt">-¥{formatCurrency(bill.amount)}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="adet__cat-drawer-empty">本周期暂无这个分类的账单</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function AnalyticsDetailPage() {
   const bills = useBills();
   const navigate = useNavigate();
   const analyticsFilter = useBillStore(s => s.analyticsFilter);
   const setAnalyticsFilter = useBillStore(s => s.setAnalyticsFilter);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [selectedCatId, setSelectedCatId] = useState(null);
 
   const filter = analyticsFilter;
 
@@ -304,6 +353,16 @@ export default function AnalyticsDetailPage() {
     }
     return result;
   }, [bills, filter]);
+
+  const selectedCategoryDetail = useMemo(() => {
+    if (!selectedCatId) return null;
+    const { start, end } = filterDateRange(filter);
+    const category = getCategoryById(selectedCatId);
+    const categoryBills = bills.filter(
+      b => b.type === 'expense' && b.categoryId === selectedCatId && inRange(b.date, start, end)
+    );
+    return { category, bills: categoryBills };
+  }, [bills, filter, selectedCatId]);
 
   // ── Section 2: Pie ──────────────────────────────────
   const pieData = useMemo(() => {
@@ -550,14 +609,19 @@ export default function AnalyticsDetailPage() {
                   const isUp = c.change > 0;
                   const isFlat = c.change === 0;
                   return (
-                    <div key={c.catId} className="adet__compare-item">
+                    <button
+                      key={c.catId}
+                      type="button"
+                      className="adet__compare-item"
+                      onClick={() => setSelectedCatId(c.catId)}
+                    >
                       <span className="adet__compare-dot" style={{ background: c.color }} />
                       <span className="adet__compare-name">{c.name}</span>
                       <span className="adet__compare-cur">¥{formatCurrency(c.cur)}</span>
                       <span className={`adet__compare-change ${isFlat ? '' : isUp ? 'text-red' : 'text-green'}`}>
                         {isFlat ? '—' : `${isUp ? '+' : ''}${c.change.toFixed(0)}%`}
                       </span>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -600,6 +664,11 @@ export default function AnalyticsDetailPage() {
           onClose={() => setSheetOpen(false)}
           filter={filter}
           onConfirm={setAnalyticsFilter}
+        />
+        <CategoryBillDrawer
+          category={selectedCategoryDetail?.category}
+          bills={selectedCategoryDetail?.bills || []}
+          onClose={() => setSelectedCatId(null)}
         />
       </div>
     </div>
