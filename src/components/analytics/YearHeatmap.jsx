@@ -37,18 +37,23 @@ export default function YearHeatmap({ months, selectedDate, onSelect }) {
             </div>
 
             {!isExpanded && (
-              <div className="hm__year-mini-dots">
-                {m.weeks.flat().map((cell, i) => (
-                  cell ? (
-                    <div
-                      key={i}
-                      className="hm__year-dot"
-                      style={{ background: HEAT_COLORS[cell.level] }}
-                    />
-                  ) : (
-                    <div key={i} className="hm__year-dot hm__year-dot--empty" />
-                  )
-                ))}
+              <div className="hm__mini-cal">
+                <div className="hm__mini-cal-dow">
+                  {DOW_LABELS.map((lbl, di) => (
+                    <span key={di} className="hm__mini-cal-dow-lbl">{lbl}</span>
+                  ))}
+                </div>
+                <div className="hm__mini-cal-grid">
+                  {m.weeks.map((week, wi) =>
+                    week.map((cell, ci) => (
+                      <div
+                        key={`${wi}-${ci}`}
+                        className={`hm__mini-cal-cell ${cell ? '' : 'hm__mini-cal-cell--empty'}`}
+                        style={cell ? { background: HEAT_COLORS[cell.level] } : undefined}
+                      />
+                    ))
+                  )}
+                </div>
               </div>
             )}
 

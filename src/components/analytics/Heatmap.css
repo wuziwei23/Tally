@@ -287,6 +287,56 @@
   border: none;
 }
 
+/* ── Mini Calendar (shared by Year & Quarter) ─────────── */
+.hm__mini-cal {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hm__mini-cal-dow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+
+.hm__mini-cal-dow-lbl {
+  font-size: 6px;
+  font-weight: 700;
+  color: var(--text-gray);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.hm__mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+
+.hm__mini-cal-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 2px;
+  border: 0.5px solid var(--border);
+  width: 100%;
+}
+
+.hm__mini-cal-cell--empty {
+  background: transparent !important;
+  border: none;
+}
+
+/* Square cards for collapsed state */
+.hm__year-card:not(.hm__year-card--expanded) {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.hm__quarter-card:not(.hm__quarter-card--expanded) {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
 /* ── Legend ──────────────────────────────────────────── */
 .hm__legend {
   display: flex;
