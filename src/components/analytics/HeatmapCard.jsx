@@ -35,7 +35,7 @@ function filterDateRange(filter) {
 export default function HeatmapCard() {
   const bills = useBills()
   const filter = useBillStore(s => s.analyticsFilter)
-  const { selectedDate, toggle, deselect, expandedMonth, toggleMonth } = useHeatmapSelection()
+  const { selectedDate, toggle, deselect } = useHeatmapSelection()
 
   const { start, end } = useMemo(() => filterDateRange(filter), [filter])
 

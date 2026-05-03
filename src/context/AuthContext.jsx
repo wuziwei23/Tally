@@ -33,7 +33,8 @@ export function AuthProvider({ children }) {
     if (!found) {
       return { success: false, error: '用户名或密码错误' };
     }
-    const { password: _, ...user } = found;
+    // eslint-disable-next-line no-unused-vars
+    const { password: _pw, ...user } = found;
     set(KEYS.USER, user);
     dispatch({ type: 'LOGIN', payload: user });
     return { success: true };
@@ -53,7 +54,8 @@ export function AuthProvider({ children }) {
     };
     users.push(newUser);
     set(KEYS.USERS, users);
-    const { password: _, ...user } = newUser;
+    // eslint-disable-next-line no-unused-vars
+    const { password: _pw2, ...user } = newUser;
     set(KEYS.USER, user);
     dispatch({ type: 'LOGIN', payload: user });
     return { success: true };
@@ -71,6 +73,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');

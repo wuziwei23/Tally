@@ -109,24 +109,27 @@ function buildMonthGrid(
 
   // Build week rows (Monday-based)
   const weeks: WeekRow[] = []
-  // Leading empty cells for the 1st
   let currentWeek: (DayCell | null)[] = new Array(7).fill(null)
-  // Offset: how many days from month start to actual start
   const monthStartOffset = Math.round((actualStart.getTime() - firstOfMonth.getTime()) / 86400000)
   const startCol = (startDow + monthStartOffset) % 7
 
-  let dayIdx = 0
-  for (let col = 0; col < startCol; col++) {
-    currentWeek[col] = null
+  // Fill leading empty cells
+  for (let c = 0; c < startCol; c++) {
+    currentWeek[c] = null
   }
 
+  let dayIdx = 0
+  let col = startCol
   while (dayIdx < days.length) {
-    currentWeek[startCol + dayIdx] = days[dayIdx]
-    if ((startCol + dayIdx) % 7 === 6 || dayIdx === days.length - 1) {
+    currentWeek[col] = days[dayIdx]
+    dayIdx++
+    if (col === 6 || dayIdx === days.length) {
       weeks.push(currentWeek as WeekRow)
       currentWeek = new Array(7).fill(null)
+      col = 0
+    } else {
+      col++
     }
-    dayIdx++
   }
 
   return { year, month, label: `${year}年${month + 1}月`, weeks }

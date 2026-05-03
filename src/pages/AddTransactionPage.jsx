@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useBillStore } from '../store/useBillStore';
 import { useBillActions } from '../hooks/useBill';
@@ -13,24 +13,13 @@ export default function AddTransactionPage() {
   const bills = useBillStore((s) => s.bills);
   const editingBill = editingId ? bills.find((b) => b.id === editingId) : null;
 
-  const [type, setType] = useState('expense');
-  const [amount, setAmount] = useState('');
-  const [categoryId, setCategoryId] = useState('');
-  const [date, setDate] = useState(getToday());
-  const [note, setNote] = useState('');
+  const [type, setType] = useState(editingBill?.type || 'expense');
+  const [amount, setAmount] = useState(editingBill ? String(editingBill.amount) : '');
+  const [categoryId, setCategoryId] = useState(editingBill?.categoryId || '');
+  const [date, setDate] = useState(editingBill?.date || getToday());
+  const [note, setNote] = useState(editingBill?.note || '');
   const { addBill, updateBill } = useBillActions();
   const navigate = useNavigate();
-
-  // Pre-fill form in edit mode
-  useEffect(() => {
-    if (editingBill) {
-      setType(editingBill.type);
-      setAmount(String(editingBill.amount));
-      setCategoryId(editingBill.categoryId);
-      setDate(editingBill.date);
-      setNote(editingBill.note || '');
-    }
-  }, [editingBill]);
 
   const categories = type === 'expense' ? expenseCategories : incomeCategories;
 

@@ -109,6 +109,7 @@ export function TransactionProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useTransactions() {
   const ctx = useContext(TransactionContext);
   if (!ctx) throw new Error('useTransactions must be used within TransactionProvider');

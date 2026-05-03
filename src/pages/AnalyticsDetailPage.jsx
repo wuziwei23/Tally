@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBillStore } from '../store/useBillStore';
 import { useBills } from '../hooks/useBill';
@@ -11,11 +11,6 @@ import {
 import HeatmapCard from '../components/analytics/HeatmapCard';
 import './AnalyticsDetailPage.css';
 
-const MODE_OPTIONS = [
-  { label: '月', value: 'month' },
-  { label: '季度', value: 'quarter' },
-  { label: '年', value: 'year' },
-];
 
 const QUARTER_OPTIONS = [
   { value: 1, label: 'Q1 (1-3月)' },
@@ -120,21 +115,22 @@ function BottomSheet({ open, onClose, filter, onConfirm }) {
   const [month, setMonth] = useState(filter.month || CUR_MONTH);
   const [quarter, setQuarter] = useState(filter.quarter || CUR_Q);
 
-  // Reset when opening
-  const [prevOpen, setPrevOpen] = useState(false);
-  if (open && !prevOpen) {
-    setPrevOpen(true);
-    setYear(filter.year);
-    setMonth(filter.month || CUR_MONTH);
-    setQuarter(filter.quarter || CUR_Q);
-  }
-  if (!open && prevOpen) setPrevOpen(false);
+  // Reset picker values when sheet opens
+  const prevOpenRef = useRef(false);
+  useEffect(() => {
+    if (open && !prevOpenRef.current) {
+      setYear(filter.year);
+      setMonth(filter.month || CUR_MONTH);
+      setQuarter(filter.quarter || CUR_Q);
+    }
+    prevOpenRef.current = open;
+  }, [open, filter.year, filter.month, filter.quarter, CUR_MONTH, CUR_Q]);
 
   const years = useMemo(() => {
     const arr = [];
     for (let y = CUR_YEAR + 1; y >= CUR_YEAR - 5; y--) arr.push(y);
     return arr;
-  }, []);
+  }, [CUR_YEAR]);
 
   const yearRef = useRef(null);
   const valRef = useRef(null);
@@ -146,11 +142,10 @@ function BottomSheet({ open, onClose, filter, onConfirm }) {
     }
   }, []);
 
-  // Scroll on open
-  const [scrolled, setScrolled] = useState(false);
-  if (open && !scrolled) {
-    setScrolled(true);
-    setTimeout(() => {
+  // Scroll to selected item when sheet opens
+  useEffect(() => {
+    if (!open) return;
+    const timer = setTimeout(() => {
       const yi = years.indexOf(filter.year);
       if (yi >= 0) scrollToSelected(yearRef, yi);
       if (filter.mode === 'month') {
@@ -159,8 +154,8 @@ function BottomSheet({ open, onClose, filter, onConfirm }) {
         scrollToSelected(valRef, (filter.quarter || 1) - 1);
       }
     }, 100);
-  }
-  if (!open && scrolled) setScrolled(false);
+    return () => clearTimeout(timer);
+  }, [open, filter.year, filter.mode, filter.month, filter.quarter, years, scrollToSelected]);
 
   function handleConfirm() {
     if (filter.mode === 'month') onConfirm({ mode: 'month', year, month });

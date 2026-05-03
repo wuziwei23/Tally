@@ -5,7 +5,6 @@ import TabBar from './components/layout/TabBar';
 import HomePage from './pages/HomePage';
 import AddTransactionPage from './pages/AddTransactionPage';
 import ChartsPage from './pages/ChartsPage';
-import StatsDetailPage from './pages/StatsDetailPage';
 import AnalyticsDetailPage from './pages/AnalyticsDetailPage';
 import HistoryPage from './pages/HistoryPage';
 import SettingsPage from './pages/SettingsPage';
