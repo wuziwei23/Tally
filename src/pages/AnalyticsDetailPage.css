@@ -338,14 +338,16 @@
   background: var(--bg-card);
   border: var(--border-width) solid var(--border);
   border-bottom: none;
-  border-radius: 34px 34px 0 0;
+  border-radius: 32px 32px 0 0;
   overflow: hidden;
   isolation: isolate;
-  width: 100%;
-  max-width: 480px;
+  width: min(560px, calc(100vw - 48px));
   max-height: min(72vh, 620px);
-  padding: 16px var(--pad) calc(var(--safe-bottom) + 20px);
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+  padding: 22px;
+  box-sizing: border-box;
+  box-shadow:
+    0 -6px 24px rgba(0, 0, 0, 0.08),
+    0 0 0 2px #222 inset;
   animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
@@ -360,9 +362,11 @@
 
 .adet__cat-drawer-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
   margin-bottom: 16px;
 }
 
@@ -370,6 +374,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 1;
   min-width: 0;
 }
 
@@ -399,7 +404,9 @@
   font-weight: 800;
   color: var(--text-red);
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
   white-space: nowrap;
+  text-align: right;
 }
 
 .adet__cat-drawer-bills {
@@ -416,7 +423,9 @@
 .adet__cat-drawer-bill {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
   padding: 10px 0;
   border-bottom: 1px solid #F0ECE6;
   opacity: 0;
@@ -446,6 +455,7 @@
 .adet__cat-drawer-bill-info {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -471,7 +481,9 @@
   font-size: 14px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
   white-space: nowrap;
+  text-align: right;
 }
 
 .adet__cat-drawer-empty {
