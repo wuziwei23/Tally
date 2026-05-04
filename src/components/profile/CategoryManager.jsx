@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import CategoryGrid from './CategoryGrid';
 import CategoryIcon from '../common/CategoryIcon';
-import AddCategoryDrawer, { ICON_MAP } from './AddCategoryDrawer';
+import AddCategoryDrawer from './AddCategoryDrawer';
 import './CategoryManager.css';
 
 export default function CategoryManager({ categories, customCategories, onAddCustom, type }) {
@@ -21,20 +21,14 @@ export default function CategoryManager({ categories, customCategories, onAddCus
       {/* Custom categories */}
       <h4 className="catmgr__section-title">我的分类</h4>
       <div className="catmgr__custom-wrap">
-        {customCategories.map(cat => {
-          const IconComp = ICON_MAP[cat.icon]
-          return (
-            <div key={cat.id} className="catgrid__item">
-              <span className="catgrid__icon" style={{ background: cat.color + '25', color: cat.color }}>
-                {IconComp
-                  ? <IconComp size={18} strokeWidth={2} />
-                  : <CategoryIcon categoryId={cat.id} size={18} color={cat.color} />
-                }
-              </span>
-              <span className="catgrid__name">{cat.name}</span>
-            </div>
-          )
-        })}
+        {customCategories.map(cat => (
+          <div key={cat.id} className="catgrid__item">
+            <span className="catgrid__icon" style={{ background: cat.color + '25', color: cat.color }}>
+              <CategoryIcon categoryId={cat.id} size={18} color={cat.color} iconComponent={cat.iconComponent} />
+            </span>
+            <span className="catgrid__name">{cat.name}</span>
+          </div>
+        ))}
         <button className="catmgr__add-chip" onClick={() => setDrawerOpen(true)}>
           <span className="catmgr__add-chip-icon">+</span>
           <span className="catmgr__add-chip-text">新建分类</span>

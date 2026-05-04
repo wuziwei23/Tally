@@ -133,7 +133,14 @@ const icons = {
   ),
 };
 
-export default function CategoryIcon({ categoryId, size = 20, color = 'currentColor' }) {
+export default function CategoryIcon({ categoryId, size = 20, color = 'currentColor', iconComponent: IconComp }) {
+  if (IconComp) {
+    return (
+      <span style={{ display: 'inline-flex', width: size, height: size, color }}>
+        <IconComp size={size} strokeWidth={2} />
+      </span>
+    );
+  }
   const icon = icons[categoryId];
   if (!icon) return <span>?</span>;
   return (

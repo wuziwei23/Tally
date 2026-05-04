@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useBillStore } from '../store/useBillStore';
 import { useBillActions } from '../hooks/useBill';
-import { expenseCategories, incomeCategories } from '../data/categories';
+import { useCategories } from '../hooks/useCategories';
 import { getToday } from '../utils/format';
 import CategoryIcon from '../components/common/CategoryIcon';
 import './AddTransactionPage.css';
@@ -20,6 +20,7 @@ export default function AddTransactionPage() {
   const [note, setNote] = useState(editingBill?.note || '');
   const { addBill, updateBill } = useBillActions();
   const navigate = useNavigate();
+  const { expenseCategories, incomeCategories } = useCategories();
 
   const categories = type === 'expense' ? expenseCategories : incomeCategories;
 
@@ -120,7 +121,12 @@ export default function AddTransactionPage() {
                   color: categoryId === cat.id ? '#fff' : cat.color,
                   borderColor: categoryId === cat.id ? cat.color : undefined,
                 }}>
-                  <CategoryIcon categoryId={cat.id} size={20} color={categoryId === cat.id ? '#fff' : cat.color} />
+                  <CategoryIcon
+                    categoryId={cat.id}
+                    size={20}
+                    color={categoryId === cat.id ? '#fff' : cat.color}
+                    iconComponent={cat.iconComponent}
+                  />
                 </span>
                 <span className="add-pg__cat-name">{cat.name}</span>
               </button>
