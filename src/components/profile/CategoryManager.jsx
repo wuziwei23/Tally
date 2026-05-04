@@ -1,46 +1,53 @@
 import { useState } from 'react';
 import CategoryGrid from './CategoryGrid';
+import CategoryIcon from '../common/CategoryIcon';
+import AddCategoryDrawer, { ICON_MAP } from './AddCategoryDrawer';
 import './CategoryManager.css';
 
-export default function CategoryManager({ categories, customCategories, onAddCustom }) {
-  const [newName, setNewName] = useState('');
+export default function CategoryManager({ categories, customCategories, onAddCustom, type }) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  function handleAdd() {
-    const trimmed = newName.trim();
-    if (!trimmed) return;
-    onAddCustom(trimmed);
-    setNewName('');
+  function handleDrawerSubmit({ name, icon, color }) {
+    onAddCustom({ name, icon, color });
+    setDrawerOpen(false);
   }
 
   return (
     <div className="catmgr">
-      {/* Add custom input */}
-      <div className="catmgr__add-row">
-        <input
-          className="catmgr__input"
-          type="text"
-          placeholder="新增自定义分类"
-          value={newName}
-          onChange={e => setNewName(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter') handleAdd(); }}
-        />
-        <button className="catmgr__add-btn" onClick={handleAdd}>添加</button>
-      </div>
-
       {/* Default categories */}
       <h4 className="catmgr__section-title">默认分类</h4>
       <CategoryGrid categories={categories} />
 
       {/* Custom categories */}
       <h4 className="catmgr__section-title">我的分类</h4>
-      {customCategories.length > 0 ? (
-        <CategoryGrid categories={customCategories} />
-      ) : (
-        <div className="catmgr__empty">
-          <p className="catmgr__empty-main">还没有自定义分类</p>
-          <p className="catmgr__empty-sub">你可以按自己的习惯新增，比如宠物、学习。</p>
-        </div>
-      )}
+      <div className="catmgr__custom-wrap">
+        {customCategories.map(cat => {
+          const IconComp = ICON_MAP[cat.icon]
+          return (
+            <div key={cat.id} className="catgrid__item">
+              <span className="catgrid__icon" style={{ background: cat.color + '25', color: cat.color }}>
+                {IconComp
+                  ? <IconComp size={18} strokeWidth={2} />
+                  : <CategoryIcon categoryId={cat.id} size={18} color={cat.color} />
+                }
+              </span>
+              <span className="catgrid__name">{cat.name}</span>
+            </div>
+          )
+        })}
+        <button className="catmgr__add-chip" onClick={() => setDrawerOpen(true)}>
+          <span className="catmgr__add-chip-icon">+</span>
+          <span className="catmgr__add-chip-text">新建分类</span>
+        </button>
+      </div>
+
+      {/* Add Category Drawer */}
+      <AddCategoryDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onSubmit={handleDrawerSubmit}
+        type={type}
+      />
     </div>
   );
 }

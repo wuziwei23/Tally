@@ -6,27 +6,62 @@ import CategoryTabs from '../components/profile/CategoryTabs';
 import CategoryManager from '../components/profile/CategoryManager';
 import './SettingsPage.css';
 
+const STORAGE_KEY = 'custom_categories';
+
+function loadCustom() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { expense: [], income: [] };
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return { expense: [], income: [] };
+    return {
+      expense: arr.filter(c => c.type === 'expense'),
+      income: arr.filter(c => c.type === 'income'),
+    };
+  } catch {
+    return { expense: [], income: [] };
+  }
+}
+
+function saveCustom(expense, income) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...expense, ...income]));
+  } catch {}
+}
+
 export default function SettingsPage() {
   const { user } = useAuth();
   const [catType, setCatType] = useState('expense');
-  const [customExpense, setCustomExpense] = useState([]);
-  const [customIncome, setCustomIncome] = useState([]);
+
+  const initial = loadCustom();
+  const [customExpense, setCustomExpense] = useState(initial.expense);
+  const [customIncome, setCustomIncome] = useState(initial.income);
 
   const categories = catType === 'expense' ? expenseCategories : incomeCategories;
   const customCategories = catType === 'expense' ? customExpense : customIncome;
 
-  function handleAddCustom(name) {
+  function handleAddCustom({ name, icon, color }) {
     const newCat = {
       id: 'custom_' + Date.now(),
       name,
-      icon: name.charAt(0),
+      icon,
       type: catType,
-      color: catType === 'expense' ? '#FF9500' : '#34C759',
+      color,
+      isCustom: true,
+      createdAt: new Date().toISOString(),
     };
     if (catType === 'expense') {
-      setCustomExpense(prev => [...prev, newCat]);
+      setCustomExpense(prev => {
+        const next = [...prev, newCat];
+        saveCustom(next, customIncome);
+        return next;
+      });
     } else {
-      setCustomIncome(prev => [...prev, newCat]);
+      setCustomIncome(prev => {
+        const next = [...prev, newCat];
+        saveCustom(customExpense, next);
+        return next;
+      });
     }
   }
 
@@ -58,6 +93,7 @@ export default function SettingsPage() {
           categories={categories}
           customCategories={customCategories}
           onAddCustom={handleAddCustom}
+          type={catType}
         />
 
         {/* Bottom */}
