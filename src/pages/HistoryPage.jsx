@@ -31,24 +31,49 @@ export default function HistoryPage() {
 
   const grouped = useMemo(() => {
     const kw = filters.keyword.trim().toLowerCase();
+    const kwNorm = kw.replace(/[年\-\/]/g, '').replace(/月$/, '');
+
     const filtered = transactions.filter(t => {
       if (t.type !== filters.type) return false;
       if (filters.category !== 'all' && t.categoryId !== filters.category) return false;
       if (kw) {
         const catName = getCategoryById(t.categoryId).name;
         const note = t.note || '';
-        if (!note.toLowerCase().includes(kw) && !catName.toLowerCase().includes(kw)) return false;
+        const textHit = note.toLowerCase().includes(kw) || catName.toLowerCase().includes(kw);
+        if (!textHit) {
+          const d = t.date;
+          const [y, m] = d.split('-');
+          const dateHit =
+            d.includes(kwNorm) ||
+            y === kwNorm ||
+            (kwNorm.length === 6 && y + m === kwNorm) ||
+            (/^\d{1,2}$/.test(kwNorm) && parseInt(kwNorm, 10) === parseInt(m, 10));
+          if (!dateHit) return false;
+        }
       }
       return true;
     });
-    const map = {};
+
+    const dateMap = {};
     for (const t of filtered) {
-      if (!map[t.date]) map[t.date] = [];
-      map[t.date].push(t);
+      if (!dateMap[t.date]) dateMap[t.date] = [];
+      dateMap[t.date].push(t);
     }
-    return Object.entries(map)
+    const sorted = Object.entries(dateMap)
       .sort(([a], [b]) => b.localeCompare(a))
       .map(([date, txns]) => ({ date, txns }));
+
+    const years = [];
+    for (const section of sorted) {
+      const year = section.date.slice(0, 4);
+      const last = years[years.length - 1];
+      if (last && last.year === year) {
+        last.sections.push(section);
+      } else {
+        years.push({ year, sections: [section] });
+      }
+    }
+    return years;
   }, [transactions, filters]);
 
   function handleTypeChange(newType) {
@@ -138,15 +163,24 @@ export default function HistoryPage() {
             </p>
           </div>
         ) : (
-          grouped.map(({ date, txns }) => (
-            <HistorySection
-              key={date}
-              date={date}
-              txns={txns}
-              type={filters.type}
-              onDelete={handleRequestDelete}
-              onEdit={handleEdit}
-            />
+          grouped.map(({ year, sections }) => (
+            <div key={year} className="hist__year">
+              <div className="hist__year-label">
+                <span className="hist__year-line" />
+                <span className="hist__year-text">{year}</span>
+                <span className="hist__year-line" />
+              </div>
+              {sections.map(({ date, txns }) => (
+                <HistorySection
+                  key={date}
+                  date={date}
+                  txns={txns}
+                  type={filters.type}
+                  onDelete={handleRequestDelete}
+                  onEdit={handleEdit}
+                />
+              ))}
+            </div>
           ))
         )}
 
