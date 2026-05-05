@@ -10,7 +10,7 @@ import './SettingsPage.css';
 export default function SettingsPage() {
   const { user } = useAuth();
   const [catType, setCatType] = useState('expense');
-  const { expenseCategories, incomeCategories, addCategory } = useCategories();
+  const { expenseCategories, incomeCategories, addCategory, deleteCategory } = useCategories();
 
   const categories = catType === 'expense' ? expenseCategories : incomeCategories;
   const customCategories = categories.filter(c => c.isCustom);
@@ -48,6 +48,7 @@ export default function SettingsPage() {
           categories={categories}
           customCategories={customCategories}
           onAddCustom={handleAddCustom}
+          onDelete={deleteCategory}
           type={catType}
         />
 

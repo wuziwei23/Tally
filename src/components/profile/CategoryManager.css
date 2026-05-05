@@ -32,6 +32,42 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Delete button on custom chip */
+.catgrid__item--custom {
+  position: relative;
+  padding-right: 8px;
+  gap: 8px;
+}
+
+.catgrid__del {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-gray);
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+
+.catgrid__del:hover {
+  background: var(--text-red);
+  color: #fff;
+  border-color: var(--text-red);
+  transform: scale(1.1);
+}
+
+.catgrid__del:active {
+  transform: scale(0.95);
+}
+
 /* Add chip */
 .catmgr__add-chip {
   display: inline-flex;
@@ -77,4 +113,67 @@
   font-size: 13px;
   font-weight: 700;
   color: var(--text-gray);
+}
+
+/* ── Delete Confirmation Drawer ──────────────────────── */
+.catmgr__confirm {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-bottom: none;
+  border-radius: 34px 34px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 16px var(--pad) calc(var(--safe-bottom) + 20px);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.catmgr__confirm-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin: 16px 0;
+  text-align: center;
+}
+
+.catmgr__confirm-preview {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 16px;
+  background: #FFF8E8;
+  border: 2px dashed #E5E0DA;
+  border-radius: var(--r-md);
+  margin-bottom: 12px;
+}
+
+.catmgr__confirm-hint {
+  font-size: 12px;
+  color: var(--text-gray);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.catmgr__confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.catmgr__confirm-delete {
+  flex: 1.6;
+  padding: 12px;
+  background: var(--text-red);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--r-full);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: opacity 0.15s;
+}
+
+.catmgr__confirm-delete:active {
+  transform: translateY(2px);
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.10);
 }

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { expenseCategories as defaultExpense, incomeCategories as defaultIncome } from '../data/categories'
 import { ICON_MAP } from '../data/iconMap'
+import { useBillStore } from '../store/useBillStore'
 
 const STORAGE_KEY = 'custom_categories'
 
@@ -60,5 +61,23 @@ export function useCategories() {
     })
   }, [])
 
-  return { expenseCategories, incomeCategories, addCategory }
+  const deleteCategory = useCallback((catId) => {
+    setCustomCategories(prev => {
+      const target = prev.find(c => c.id === catId)
+      if (!target) return prev
+      const next = prev.filter(c => c.id !== catId)
+      saveToStorage(next)
+      // Re-map orphaned bills to "其他"
+      const fallbackId = target.type === 'expense' ? 'other_expense' : 'other_income'
+      const { bills, updateBill } = useBillStore.getState()
+      for (const b of bills) {
+        if (b.categoryId === catId) {
+          updateBill(b.id, { categoryId: fallbackId })
+        }
+      }
+      return next
+    })
+  }, [])
+
+  return { expenseCategories, incomeCategories, addCategory, deleteCategory }
 }
