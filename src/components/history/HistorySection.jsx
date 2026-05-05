@@ -18,7 +18,7 @@ function formatDateLabel(dateStr) {
   return `${month}月${day}日`;
 }
 
-export default function HistorySection({ date, txns, type, onDelete, onEdit }) {
+export default function HistorySection({ date, txns, type, onDelete, onEdit, onLongPress }) {
   const total = txns.reduce((s, t) => s + t.amount, 0);
   const [swipedId, setSwipedId] = useState(null);
 
@@ -44,6 +44,7 @@ export default function HistorySection({ date, txns, type, onDelete, onEdit }) {
             txn={txn}
             onDelete={onDelete}
             onEdit={onEdit}
+            onLongPress={onLongPress}
             isOpen={swipedId === txn.id}
             onSwipeStart={handleSwipeStart}
           />

@@ -1,14 +1,20 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useBills } from '../../hooks/useBill';
+import { useBills, useBillActions } from '../../hooks/useBill';
 import { getCategoryById } from '../../data/categories';
 import { formatCurrency, getToday } from '../../utils/format';
 import CategoryIcon from '../common/CategoryIcon';
+import BillActionDrawer from '../bill/BillActionDrawer';
+import DeleteConfirmDrawer from '../bill/DeleteConfirmDrawer';
 import './TodayRecordList.css';
 
 export default function TodayRecordList() {
   const transactions = useBills();
+  const { deleteBill } = useBillActions();
   const navigate = useNavigate();
+
+  const [actionTarget, setActionTarget] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const today = getToday();
   const todayTxns = useMemo(
@@ -19,6 +25,44 @@ export default function TodayRecordList() {
     () => transactions.filter(t => t.date === today).length,
     [transactions, today]
   );
+
+  // Long press logic
+  const longPressTimer = useRef(null);
+
+  const handlePointerDown = useCallback((txn) => (e) => {
+    longPressTimer.current = setTimeout(() => {
+      setActionTarget(txn);
+    }, 500);
+  }, []);
+
+  const handlePointerUp = useCallback(() => {
+    clearTimeout(longPressTimer.current);
+    longPressTimer.current = null;
+  }, []);
+
+  const handlePointerLeave = useCallback(() => {
+    clearTimeout(longPressTimer.current);
+    longPressTimer.current = null;
+  }, []);
+
+  const handleEdit = useCallback(() => {
+    if (actionTarget) {
+      navigate(`/add?edit=${actionTarget.id}`);
+      setActionTarget(null);
+    }
+  }, [actionTarget, navigate]);
+
+  const handleDeleteRequest = useCallback(() => {
+    setDeleteTarget(actionTarget);
+    setActionTarget(null);
+  }, [actionTarget]);
+
+  const handleConfirmDelete = useCallback(() => {
+    if (deleteTarget) {
+      deleteBill(deleteTarget.id);
+      setDeleteTarget(null);
+    }
+  }, [deleteTarget, deleteBill]);
 
   return (
     <div className="tr">
@@ -40,7 +84,13 @@ export default function TodayRecordList() {
             const cat = getCategoryById(txn.categoryId);
             const isExpense = txn.type === 'expense';
             return (
-              <div key={txn.id} className="tr__item">
+              <div
+                key={txn.id}
+                className="tr__item"
+                onPointerDown={handlePointerDown(txn)}
+                onPointerUp={handlePointerUp}
+                onPointerLeave={handlePointerLeave}
+              >
                 <span className="tr__icon">
                   <CategoryIcon categoryId={txn.categoryId} size={20} color={cat.color} iconComponent={cat.iconComponent} />
                 </span>
@@ -61,6 +111,19 @@ export default function TodayRecordList() {
           )}
         </div>
       )}
+
+      <BillActionDrawer
+        open={!!actionTarget}
+        onClose={() => setActionTarget(null)}
+        onEdit={handleEdit}
+        onDelete={handleDeleteRequest}
+      />
+
+      <DeleteConfirmDrawer
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

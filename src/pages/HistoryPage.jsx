@@ -5,6 +5,8 @@ import { expenseCategories, incomeCategories, getCategoryById } from '../data/ca
 import CategoryIcon from '../components/common/CategoryIcon';
 import HistoryTabs from '../components/history/HistoryTabs';
 import HistorySection from '../components/history/HistorySection';
+import BillActionDrawer from '../components/bill/BillActionDrawer';
+import DeleteConfirmDrawer from '../components/bill/DeleteConfirmDrawer';
 import './HistoryPage.css';
 
 const initialFilters = {
@@ -22,6 +24,8 @@ export default function HistoryPage() {
   const navigate = useNavigate();
   const [filters, setFilters] = useState(initialFilters);
   const [deletingId, setDeletingId] = useState(null);
+  const [actionTarget, setActionTarget] = useState(null);
+  const [deleteFromAction, setDeleteFromAction] = useState(null);
 
   const categories = filters.type === 'expense' ? expenseCategories : incomeCategories;
 
@@ -84,6 +88,29 @@ export default function HistoryPage() {
     navigate(`/add?edit=${txn.id}`);
   }
 
+  const handleLongPress = useCallback((txn) => {
+    setActionTarget(txn);
+  }, []);
+
+  const handleActionEdit = useCallback(() => {
+    if (actionTarget) {
+      navigate(`/add?edit=${actionTarget.id}`);
+      setActionTarget(null);
+    }
+  }, [actionTarget, navigate]);
+
+  const handleActionDelete = useCallback(() => {
+    setDeleteFromAction(actionTarget);
+    setActionTarget(null);
+  }, [actionTarget]);
+
+  const handleConfirmDeleteFromAction = useCallback(() => {
+    if (deleteFromAction) {
+      deleteBill(deleteFromAction.id);
+      setDeleteFromAction(null);
+    }
+  }, [deleteFromAction, deleteBill]);
+
   function handleRequestDelete(id) {
     setDeletingId(id);
   }
@@ -102,7 +129,7 @@ export default function HistoryPage() {
       <div className="hist">
         <div className="hist__header">
           <h1 className="hist__title">历史</h1>
-          <p className="hist__sub">向左滑动可删除和修改</p>
+          <p className="hist__sub">长按或左滑卡片可编辑和删除</p>
         </div>
 
         <HistoryTabs value={filters.type} onChange={handleTypeChange} />
@@ -178,6 +205,7 @@ export default function HistoryPage() {
                   type={filters.type}
                   onDelete={handleRequestDelete}
                   onEdit={handleEdit}
+                  onLongPress={handleLongPress}
                 />
               ))}
             </div>
@@ -208,6 +236,19 @@ export default function HistoryPage() {
             </div>
           </div>
         )}
+
+        <BillActionDrawer
+          open={!!actionTarget}
+          onClose={() => setActionTarget(null)}
+          onEdit={handleActionEdit}
+          onDelete={handleActionDelete}
+        />
+
+        <DeleteConfirmDrawer
+          open={!!deleteFromAction}
+          onClose={() => setDeleteFromAction(null)}
+          onConfirm={handleConfirmDeleteFromAction}
+        />
       </div>
     </div>
   );

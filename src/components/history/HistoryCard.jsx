@@ -17,7 +17,7 @@ function getDisplayTime(txn) {
 const SWIPE_THRESHOLD = 80;
 const SNAP_OPEN = -140;
 
-export default function HistoryCard({ txn, onDelete, onEdit, isOpen, onSwipeStart }) {
+export default function HistoryCard({ txn, onDelete, onEdit, onLongPress, isOpen, onSwipeStart }) {
   const cat = getCategoryById(txn.categoryId);
   const isExpense = txn.type === 'expense';
   const time = getDisplayTime(txn);
@@ -26,6 +26,7 @@ export default function HistoryCard({ txn, onDelete, onEdit, isOpen, onSwipeStar
   const currentX = useRef(0);
   const dragging = useRef(false);
   const cardRef = useRef(null);
+  const longPressTimer = useRef(null);
 
   // Reset when this card is no longer the open one
   useEffect(() => {
@@ -47,6 +48,7 @@ export default function HistoryCard({ txn, onDelete, onEdit, isOpen, onSwipeStar
 
   const handleTouchMove = useCallback((e) => {
     if (!dragging.current) return;
+    clearTimeout(longPressTimer.current);
     const dx = e.touches[0].clientX - startX.current;
     if (dx > 0) {
       currentX.current = 0;
@@ -62,6 +64,7 @@ export default function HistoryCard({ txn, onDelete, onEdit, isOpen, onSwipeStar
 
   const handleTouchEnd = useCallback(() => {
     dragging.current = false;
+    clearTimeout(longPressTimer.current);
     if (cardRef.current) {
       cardRef.current.style.transition = 'transform 0.25s ease';
       if (currentX.current < -SWIPE_THRESHOLD) {
@@ -71,6 +74,20 @@ export default function HistoryCard({ txn, onDelete, onEdit, isOpen, onSwipeStar
         currentX.current = 0;
       }
     }
+  }, []);
+
+  const handlePointerDown = useCallback((e) => {
+    longPressTimer.current = setTimeout(() => {
+      onLongPress?.(txn);
+    }, 500);
+  }, [txn, onLongPress]);
+
+  const handlePointerUp = useCallback(() => {
+    clearTimeout(longPressTimer.current);
+  }, []);
+
+  const handlePointerLeave = useCallback(() => {
+    clearTimeout(longPressTimer.current);
   }, []);
 
   return (
@@ -99,6 +116,9 @@ export default function HistoryCard({ txn, onDelete, onEdit, isOpen, onSwipeStar
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
       >
         <div className="hcard__icon" style={{ background: cat.color + '25', color: cat.color }}>
           <CategoryIcon categoryId={txn.categoryId} size={20} color={cat.color} iconComponent={cat.iconComponent} />
