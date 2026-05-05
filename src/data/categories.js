@@ -1,3 +1,5 @@
+import { ICON_MAP } from './iconMap';
+
 export const expenseCategories = [
   { id: 'food', name: '餐饮', icon: ' ', type: 'expense', color: '#FF9500' },
   { id: 'transport', name: '交通', icon: ' ', type: 'expense', color: '#007AFF' },
@@ -23,6 +25,35 @@ export const incomeCategories = [
 
 export const allCategories = [...expenseCategories, ...incomeCategories];
 
+function getCustomCategories() {
+  try {
+    const raw = localStorage.getItem('custom_categories');
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
+  }
+}
+
+function withIconComponent(cat) {
+  return { ...cat, iconComponent: ICON_MAP[cat.icon] || null };
+}
+
 export function getCategoryById(id) {
-  return allCategories.find(c => c.id === id) || { id, name: '未知', icon: '❓', color: '#8E8E93' };
+  const found = allCategories.find(c => c.id === id);
+  if (found) return found;
+  const customs = getCustomCategories();
+  const custom = customs.find(c => c.id === id);
+  if (custom) return withIconComponent(custom);
+  return { id, name: '未知', icon: '❓', color: '#8E8E93' };
+}
+
+export function getCategoryByName(name) {
+  const found = allCategories.find(c => c.name === name);
+  if (found) return found;
+  const customs = getCustomCategories();
+  const custom = customs.find(c => c.name === name);
+  if (custom) return withIconComponent(custom);
+  return { id: name, name: '未知', icon: '❓', color: '#8E8E93' };
 }

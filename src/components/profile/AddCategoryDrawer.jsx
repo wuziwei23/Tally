@@ -1,51 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  PawPrint, Dumbbell, Target, BookOpen,
-  Coffee, Cookie, GlassWater, MoonStar,
-  Gamepad2, Music, Scissors, Camera,
-  Flower, Sparkles, Shirt, Gift,
-  Baby, Heart, House, Brain,
-  Briefcase, TrendingUp, Bookmark, Fish,
-  Hammer, Tent, Bike, Waves,
-  PenTool, Dice3, Mic, Sun,
-} from 'lucide-react'
+import { ICON_MAP } from '../../data/iconMap'
 import './AddCategoryDrawer.css'
-
-export const ICON_MAP = {
-  '宠物': PawPrint,
-  '健身': Dumbbell,
-  '目标': Target,
-  '阅读': BookOpen,
-  '咖啡': Coffee,
-  '甜品': Cookie,
-  '小酌': GlassWater,
-  '夜生活': MoonStar,
-  '电竞': Gamepad2,
-  '乐器': Music,
-  '手作': Scissors,
-  '摄影': Camera,
-  '园艺': Flower,
-  '护肤': Sparkles,
-  '穿搭': Shirt,
-  '礼物': Gift,
-  '育儿': Baby,
-  '约会': Heart,
-  '家庭': House,
-  '冥想': Brain,
-  '副业': Briefcase,
-  '投资': TrendingUp,
-  '收藏': Bookmark,
-  '钓鱼': Fish,
-  'DIY': Hammer,
-  '露营': Tent,
-  '骑行': Bike,
-  '游泳': Waves,
-  '写作': PenTool,
-  '桌游': Dice3,
-  'K歌': Mic,
-  '日常': Sun,
-}
 
 const LIFESTYLE_ICONS = Object.entries(ICON_MAP).map(([label, icon]) => ({ icon, label }))
 

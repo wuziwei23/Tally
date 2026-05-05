@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { expenseCategories as defaultExpense, incomeCategories as defaultIncome } from '../data/categories'
-import { ICON_MAP } from '../components/profile/AddCategoryDrawer'
+import { ICON_MAP } from '../data/iconMap'
 
 const STORAGE_KEY = 'custom_categories'
 

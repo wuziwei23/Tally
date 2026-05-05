@@ -49,7 +49,7 @@ export default function StatsPanel({ transactions, type, period }) {
     return Object.entries(map)
       .map(([catId, amount]) => {
         const cat = getCategoryById(catId);
-        return { name: cat.name, catId, color: cat.color, amount, pct: absTotal > 0 ? ((amount / absTotal) * 100).toFixed(0) : 0 };
+        return { name: cat.name, catId, color: cat.color, iconComponent: cat.iconComponent, amount, pct: absTotal > 0 ? ((amount / absTotal) * 100).toFixed(0) : 0 };
       })
       .sort((a, b) => b.amount - a.amount);
   }, [filtered]);
@@ -112,7 +112,7 @@ export default function StatsPanel({ transactions, type, period }) {
             {byCat.map((c, i) => (
               <div key={c.name} className="sp__rank-item">
                 <span className="sp__rank-no">{i + 1}</span>
-                <span className="sp__rank-icon"><CategoryIcon categoryId={c.catId} size={20} color={c.color} /></span>
+                <span className="sp__rank-icon"><CategoryIcon categoryId={c.catId} size={20} color={c.color} iconComponent={c.iconComponent} /></span>
                 <span className="sp__rank-name">{c.name}</span>
                 <div className="sp__rank-bar-track">
                   <div className="sp__rank-bar-fill" style={{ width: `${c.pct}%`, background: c.color }} />

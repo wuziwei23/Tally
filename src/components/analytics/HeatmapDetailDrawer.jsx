@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getCategoryById } from '../../data/categories'
 import { formatCurrency } from '../../utils/format'
+import CategoryIcon from '../common/CategoryIcon'
 
 export default function HeatmapDetailDrawer({ date, bills, onClose }) {
   const dayBills = useMemo(() => {
@@ -80,7 +81,12 @@ export default function HeatmapDetailDrawer({ date, bills, onClose }) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.04, duration: 0.2 }}
                     >
-                      <span className="hm__drawer-bill-icon">{cat.icon}</span>
+                      <span className="hm__drawer-bill-icon">
+                        {cat.iconComponent
+                          ? <CategoryIcon categoryId={b.categoryId} size={20} color={cat.color} iconComponent={cat.iconComponent} />
+                          : cat.icon
+                        }
+                      </span>
                       <div className="hm__drawer-bill-info">
                         <span className="hm__drawer-bill-cat">{cat.name}</span>
                         {b.note && <span className="hm__drawer-bill-note">{b.note}</span>}

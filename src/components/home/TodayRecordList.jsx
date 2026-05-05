@@ -42,7 +42,7 @@ export default function TodayRecordList() {
             return (
               <div key={txn.id} className="tr__item">
                 <span className="tr__icon">
-                  <CategoryIcon categoryId={txn.categoryId} size={20} color={cat.color} />
+                  <CategoryIcon categoryId={txn.categoryId} size={20} color={cat.color} iconComponent={cat.iconComponent} />
                 </span>
                 <div className="tr__info">
                   <span className="tr__name">{cat.name}</span>

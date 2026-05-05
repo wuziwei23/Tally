@@ -101,7 +101,7 @@ export default function HistoryCard({ txn, onDelete, onEdit, isOpen, onSwipeStar
         onTouchEnd={handleTouchEnd}
       >
         <div className="hcard__icon" style={{ background: cat.color + '25', color: cat.color }}>
-          <CategoryIcon categoryId={txn.categoryId} size={20} color={cat.color} />
+          <CategoryIcon categoryId={txn.categoryId} size={20} color={cat.color} iconComponent={cat.iconComponent} />
         </div>
         <div className="hcard__info">
           <span className="hcard__name">{txn.note || cat.name}</span>
