@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
 import { useHydrated } from './hooks/useBill';
 import TabBar from './components/layout/TabBar';
 import HomePage from './pages/HomePage';
@@ -62,9 +61,7 @@ function AppLayout() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppLayout />
-      </AuthProvider>
+      <AppLayout />
     </BrowserRouter>
   );
 }

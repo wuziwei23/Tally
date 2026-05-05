@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Camera, MessageCircle, Smartphone, User, Cloud, Shield, Sparkles } from 'lucide-react'
+import { userRepo } from '../../database'
 import './AccountDrawer.css'
 
 const AVATAR_COLORS = [
@@ -14,22 +15,8 @@ const AVATAR_COLORS = [
   { hex: '#777777', name: '深灰' },
 ]
 
-const STORAGE_KEY = 'userProfile'
-
-function loadProfile() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
-  } catch { /* ignore */ }
-  return null
-}
-
-function saveProfile(profile) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(profile))
-}
-
 export default function AccountDrawer({ onClose, onConfirm }) {
-  const existing = loadProfile()
+  const existing = userRepo.getProfile()
   const [nickname, setNickname] = useState(existing?.nickname || '')
   const [avatarColor, setAvatarColor] = useState(existing?.avatarColor || AVATAR_COLORS[0].hex)
   const [loginType, setLoginType] = useState(existing?.loginType || null)
@@ -50,13 +37,13 @@ export default function AccountDrawer({ onClose, onConfirm }) {
       avatarImage: null,
       loginType: loginType || 'guest',
     }
-    saveProfile(profile)
+    userRepo.saveProfile(profile)
     onConfirm?.(profile)
     onClose()
   }
 
   function handleLogout() {
-    localStorage.removeItem(STORAGE_KEY)
+    userRepo.clearProfile()
     onConfirm?.(null)
     onClose()
   }

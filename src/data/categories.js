@@ -1,4 +1,5 @@
 import { ICON_MAP } from './iconMap';
+import { categoryRepo } from '../database';
 
 export const expenseCategories = [
   { id: 'food', name: '餐饮', icon: ' ', type: 'expense', color: '#FF9500' },
@@ -25,17 +26,6 @@ export const incomeCategories = [
 
 export const allCategories = [...expenseCategories, ...incomeCategories];
 
-function getCustomCategories() {
-  try {
-    const raw = localStorage.getItem('custom_categories');
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : [];
-  } catch {
-    return [];
-  }
-}
-
 function withIconComponent(cat) {
   return { ...cat, iconComponent: ICON_MAP[cat.icon] || null };
 }
@@ -43,7 +33,7 @@ function withIconComponent(cat) {
 export function getCategoryById(id) {
   const found = allCategories.find(c => c.id === id);
   if (found) return found;
-  const customs = getCustomCategories();
+  const customs = categoryRepo.findAll();
   const custom = customs.find(c => c.id === id);
   if (custom) return withIconComponent(custom);
   return { id, name: '未知', icon: '❓', color: '#8E8E93' };
@@ -52,7 +42,7 @@ export function getCategoryById(id) {
 export function getCategoryByName(name) {
   const found = allCategories.find(c => c.name === name);
   if (found) return found;
-  const customs = getCustomCategories();
+  const customs = categoryRepo.findAll();
   const custom = customs.find(c => c.name === name);
   if (custom) return withIconComponent(custom);
   return { id: name, name: '未知', icon: '❓', color: '#8E8E93' };

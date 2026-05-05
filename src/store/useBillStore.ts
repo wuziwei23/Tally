@@ -1,7 +1,7 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { Bill, CategoryStat } from '../types'
 import { generateSampleTransactions } from '../data/sampleData'
+import { billRepo } from '../database'
 
 export type AnalyticsMode = 'month' | 'quarter' | 'year'
 
@@ -10,10 +10,6 @@ export interface AnalyticsFilter {
   year: number
   month?: number
   quarter?: number
-}
-
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
 }
 
 interface BillState {
@@ -27,56 +23,56 @@ interface BillState {
   deleteBill: (id: string) => void
   updateBill: (id: string, changes: Partial<Omit<Bill, 'id'>>) => void
   getBills: () => Bill[]
+  hydrate: () => void
 }
 
-export const useBillStore = create<BillState>()(
-  persist(
-    (set, get) => ({
-      bills: [],
-      hasHydrated: false,
-      setHasHydrated: (v) => set({ hasHydrated: v }),
-      analyticsFilter: {
-        mode: 'month' as AnalyticsMode,
-        year: new Date().getFullYear(),
-        month: new Date().getMonth() + 1,
-      },
-      setAnalyticsFilter: (f: Partial<AnalyticsFilter>) =>
-        set({ analyticsFilter: { ...get().analyticsFilter, ...f } }),
+function loadInitialBills(): Bill[] {
+  const stored = billRepo.findAll()
+  if (stored.length > 0) return stored
+  const sample = generateSampleTransactions() as Bill[]
+  billRepo.replaceAll(sample)
+  return sample
+}
 
-      addBill: (input) => {
-        const bill: Bill = { ...input, id: generateId() }
-        const bills = [bill, ...get().bills]
-        set({ bills })
-        return bill
-      },
+export const useBillStore = create<BillState>()((set, get) => ({
+  bills: [],
+  hasHydrated: false,
+  setHasHydrated: (v) => set({ hasHydrated: v }),
+  analyticsFilter: {
+    mode: 'month' as AnalyticsMode,
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+  },
+  setAnalyticsFilter: (f: Partial<AnalyticsFilter>) =>
+    set({ analyticsFilter: { ...get().analyticsFilter, ...f } }),
 
-      deleteBill: (id) => {
-        set({ bills: get().bills.filter((b) => b.id !== id) })
-      },
+  hydrate: () => {
+    const bills = loadInitialBills()
+    set({ bills, hasHydrated: true })
+  },
 
-      updateBill: (id, changes) => {
-        set({
-          bills: get().bills.map((b) =>
-            b.id === id ? { ...b, ...changes } : b
-          ),
-        })
-      },
+  addBill: (input) => {
+    const bill = billRepo.saveBill(input)
+    set({ bills: [bill, ...get().bills] })
+    return bill
+  },
 
-      getBills: () => get().bills,
-    }),
-    {
-      name: 'vibe-ledger-storage',
-      onRehydrateStorage: () => (state) => {
-        if (state) {
-          if (state.bills.length === 0) {
-            state.bills = generateSampleTransactions() as Bill[]
-          }
-          state.setHasHydrated(true)
-        }
-      },
-    }
-  )
-)
+  deleteBill: (id) => {
+    billRepo.deleteBill(id)
+    set({ bills: get().bills.filter((b) => b.id !== id) })
+  },
+
+  updateBill: (id, changes) => {
+    billRepo.updateBill(id, changes)
+    set({
+      bills: get().bills.map((b) =>
+        b.id === id ? { ...b, ...changes } : b
+      ),
+    })
+  },
+
+  getBills: () => get().bills,
+}))
 
 // ── Selectors ──────────────────────────────────────────
 

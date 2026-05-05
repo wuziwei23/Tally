@@ -9,8 +9,15 @@ import {
 import type { Bill, CategoryStat } from '../types'
 
 // ── Hydration ─────────────────────────────────────────
+let _hydrated = false
+
 export function useHydrated(): boolean {
-  return useBillStore((s) => s.hasHydrated)
+  const hydrated = useBillStore((s) => s.hasHydrated)
+  if (!_hydrated) {
+    _hydrated = true
+    useBillStore.getState().hydrate()
+  }
+  return hydrated
 }
 
 // ── Bills list ────────────────────────────────────────

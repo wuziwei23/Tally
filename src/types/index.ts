@@ -24,3 +24,17 @@ export interface CategoryStat {
   count: number
   percentage: number
 }
+
+export interface UserProfile {
+  nickname: string
+  avatarColor: string
+  avatarImage: string | null
+  loginType: 'wechat' | 'phone' | 'guest'
+}
+
+export interface Budget {
+  id: string
+  categoryId: string
+  amount: number
+  period: 'month' | 'year'
+}

@@ -1,30 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useCategories } from '../hooks/useCategories';
 import { expenseCategories as defaultExpense, incomeCategories as defaultIncome } from '../data/categories';
+import { userRepo } from '../database';
 import ProfileCard from '../components/profile/ProfileCard';
 import AccountDrawer from '../components/profile/AccountDrawer';
 import CategoryTabs from '../components/profile/CategoryTabs';
 import CategoryManager from '../components/profile/CategoryManager';
 import './SettingsPage.css';
 
-const PROFILE_KEY = 'userProfile';
-
-function loadProfile() {
-  try {
-    const raw = localStorage.getItem(PROFILE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return null;
-}
-
 export default function SettingsPage() {
-  const [profile, setProfile] = useState(loadProfile);
+  const [profile, setProfile] = useState(() => userRepo.getProfile());
   const [showAccountDrawer, setShowAccountDrawer] = useState(false);
   const [catType, setCatType] = useState('expense');
   const { expenseCategories, incomeCategories, addCategory, deleteCategory } = useCategories();
 
   useEffect(() => {
-    setProfile(loadProfile());
+    setProfile(userRepo.getProfile());
   }, [showAccountDrawer]);
 
   const categories = catType === 'expense' ? expenseCategories : incomeCategories;

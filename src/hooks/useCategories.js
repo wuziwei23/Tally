@@ -2,25 +2,7 @@ import { useState, useCallback } from 'react'
 import { expenseCategories as defaultExpense, incomeCategories as defaultIncome } from '../data/categories'
 import { ICON_MAP } from '../data/iconMap'
 import { useBillStore } from '../store/useBillStore'
-
-const STORAGE_KEY = 'custom_categories'
-
-function loadFromStorage() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return []
-    const arr = JSON.parse(raw)
-    return Array.isArray(arr) ? arr : []
-  } catch {
-    return []
-  }
-}
-
-function saveToStorage(categories) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(categories))
-  } catch {}
-}
+import { categoryRepo } from '../database'
 
 function resolveIcon(cat) {
   return {
@@ -30,7 +12,7 @@ function resolveIcon(cat) {
 }
 
 export function useCategories() {
-  const [customCategories, setCustomCategories] = useState(loadFromStorage)
+  const [customCategories, setCustomCategories] = useState(() => categoryRepo.findAll())
 
   const customExpense = customCategories.filter(c => c.type === 'expense')
   const customIncome = customCategories.filter(c => c.type === 'income')
@@ -45,28 +27,21 @@ export function useCategories() {
   ]
 
   const addCategory = useCallback(({ name, icon, color, type }) => {
-    const newCat = {
-      id: 'custom_' + Date.now(),
+    const newCat = categoryRepo.saveCategory({
       name,
       icon,
       type,
       color,
-      isCustom: true,
-      createdAt: new Date().toISOString(),
-    }
-    setCustomCategories(prev => {
-      const next = [...prev, newCat]
-      saveToStorage(next)
-      return next
+      id: 'custom_' + Date.now(),
     })
+    setCustomCategories(prev => [...prev, newCat])
   }, [])
 
   const deleteCategory = useCallback((catId) => {
     setCustomCategories(prev => {
       const target = prev.find(c => c.id === catId)
       if (!target) return prev
-      const next = prev.filter(c => c.id !== catId)
-      saveToStorage(next)
+      categoryRepo.deleteCategory(catId)
       // Re-map orphaned bills to "其他"
       const fallbackId = target.type === 'expense' ? 'other_expense' : 'other_income'
       const { bills, updateBill } = useBillStore.getState()
@@ -75,7 +50,7 @@ export function useCategories() {
           updateBill(b.id, { categoryId: fallbackId })
         }
       }
-      return next
+      return prev.filter(c => c.id !== catId)
     })
   }, [])
 
