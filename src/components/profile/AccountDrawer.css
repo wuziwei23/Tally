@@ -10,14 +10,20 @@
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   z-index: 300;
+  pointer-events: auto;
 }
 
 .ad {
   position: relative;
-  width: min(100%, 480px);
-  height: 78vh;
-  margin: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 88vh;
+  height: auto;
+  margin: 0 auto;
   background: #FFFDF7;
   border: var(--border-width) solid var(--border);
   border-bottom: none;
@@ -26,6 +32,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .ad__handle {
@@ -43,6 +50,7 @@
   padding: 28px;
   padding-bottom: 16px;
   overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .ad__body::-webkit-scrollbar {
@@ -154,6 +162,8 @@
 /* Nickname input */
 .ad__input-wrap {
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ad__input {
@@ -197,9 +207,11 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
 }
 
 .ad__method {
+  width: 100%;
   height: 72px;
   border-radius: 24px;
   border: var(--border-width) solid var(--border);
@@ -214,6 +226,7 @@
   color: var(--text-dark);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.12);
   transition: box-shadow 0.2s, transform 0.15s;
+  box-sizing: border-box;
 }
 
 .ad__method span {
@@ -240,11 +253,13 @@
 
 /* Benefits card */
 .ad__benefits {
+  width: 100%;
   margin: 24px 0;
   padding: 18px;
   border-radius: 24px;
   border: 2px dashed #D7C9A3;
   background: #FFFDF2;
+  box-sizing: border-box;
 }
 
 .ad__benefits-title {
@@ -313,10 +328,13 @@
   padding-bottom: calc(20px + var(--safe-bottom));
   background: #FFFDF7;
   border-top: 2px solid #EDE8DE;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .ad__btn {
   flex: 1;
+  min-width: 0;
   height: 54px;
   border-radius: var(--r-full);
   border: var(--border-width) solid var(--border);
@@ -329,6 +347,7 @@
   justify-content: center;
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.2s, transform 0.15s, opacity 0.2s;
+  box-sizing: border-box;
 }
 
 .ad__btn:active {
