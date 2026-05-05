@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ICON_MAP } from '../../data/iconMap'
 import './AddCategoryDrawer.css'
 
-const LIFESTYLE_ICONS = Object.entries(ICON_MAP).map(([label, icon]) => ({ icon, label }))
+const LIFESTYLE_ICONS = Object.entries(ICON_MAP)
+  .map(([label, icon]) => ({ icon, label }))
+  .filter(item => item.icon)
 
 const PRESET_COLORS = [
   { hex: '#F5E6A3', name: '奶黄' },
@@ -103,6 +105,7 @@ export default function AddCategoryDrawer({ open, onClose, onSubmit, type }) {
               <div className="acd__icon-grid">
                 {visibleIcons.map(item => {
                   const IconComp = item.icon
+                  if (!IconComp) return null
                   return (
                     <motion.button
                       key={item.label}
@@ -150,10 +153,11 @@ export default function AddCategoryDrawer({ open, onClose, onSubmit, type }) {
                   style={{ background: selectedColor, borderColor: selectedColor }}
                 >
                   <span className="acd__preview-icon">
-                    {selectedIcon
-                      ? <selectedIcon.icon size={18} strokeWidth={2} />
-                      : <Sun size={18} strokeWidth={2} />
-                    }
+                    {(() => {
+                      const DefaultIcon = ICON_MAP['日常']
+                      const PreviewIcon = selectedIcon?.icon || DefaultIcon
+                      return PreviewIcon ? <PreviewIcon size={18} strokeWidth={2} /> : null
+                    })()}
                   </span>
                   {name || '分类名'}
                 </motion.span>

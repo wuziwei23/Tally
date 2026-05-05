@@ -1,22 +1,41 @@
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useState, useEffect } from 'react';
 import { useCategories } from '../hooks/useCategories';
 import { expenseCategories as defaultExpense, incomeCategories as defaultIncome } from '../data/categories';
 import ProfileCard from '../components/profile/ProfileCard';
+import AccountDrawer from '../components/profile/AccountDrawer';
 import CategoryTabs from '../components/profile/CategoryTabs';
 import CategoryManager from '../components/profile/CategoryManager';
 import './SettingsPage.css';
 
+const PROFILE_KEY = 'userProfile';
+
+function loadProfile() {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return null;
+}
+
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const [profile, setProfile] = useState(loadProfile);
+  const [showAccountDrawer, setShowAccountDrawer] = useState(false);
   const [catType, setCatType] = useState('expense');
   const { expenseCategories, incomeCategories, addCategory, deleteCategory } = useCategories();
+
+  useEffect(() => {
+    setProfile(loadProfile());
+  }, [showAccountDrawer]);
 
   const categories = catType === 'expense' ? expenseCategories : incomeCategories;
   const customCategories = categories.filter(c => c.isCustom);
 
   function handleAddCustom({ name, icon, color }) {
     addCategory({ name, icon, color, type: catType });
+  }
+
+  function handleSaveProfile(newProfile) {
+    setProfile(newProfile);
   }
 
   const defaultCount = defaultExpense.length + defaultIncome.length;
@@ -32,7 +51,10 @@ export default function SettingsPage() {
         </div>
 
         {/* Profile Card */}
-        <ProfileCard username={user?.username} />
+        <ProfileCard
+          profile={profile}
+          onClick={() => setShowAccountDrawer(true)}
+        />
 
         {/* Category Management Header */}
         <div className="prof__cat-header">
@@ -57,6 +79,14 @@ export default function SettingsPage() {
           <p className="prof__version">记账本 v1.0.0</p>
         </div>
       </div>
+
+      {/* Account Drawer */}
+      {showAccountDrawer && (
+        <AccountDrawer
+          onClose={() => setShowAccountDrawer(false)}
+          onConfirm={handleSaveProfile}
+        />
+      )}
     </div>
   );
 }
