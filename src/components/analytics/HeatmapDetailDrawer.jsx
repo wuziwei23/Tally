@@ -1,10 +1,17 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getCategoryById } from '../../data/categories'
 import { formatCurrency } from '../../utils/format'
 import CategoryIcon from '../common/CategoryIcon'
 
 export default function HeatmapDetailDrawer({ date, bills, onClose }) {
+  useEffect(() => {
+    if (!date) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [date])
   const dayBills = useMemo(() => {
     if (!date) return []
     return bills.filter(b => b.type === 'expense' && b.date === date)
@@ -22,7 +29,7 @@ export default function HeatmapDetailDrawer({ date, bills, onClose }) {
     return Object.values(map).sort((a, b) => b.amount - a.amount)
   }, [dayBills])
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {date && (
         <motion.div
@@ -47,63 +54,66 @@ export default function HeatmapDetailDrawer({ date, bills, onClose }) {
               <span className="hm__drawer-total">¥{formatCurrency(total)}</span>
             </div>
 
-            {catBreakdown.length > 0 && (
-              <div className="hm__drawer-cats">
-                {catBreakdown.map((c, i) => (
-                  <motion.div
-                    key={c.name}
-                    className="hm__drawer-cat"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05, duration: 0.2 }}
-                  >
-                    <span className="hm__drawer-cat-dot" style={{ background: c.color }} />
-                    <span className="hm__drawer-cat-name">{c.name}</span>
-                    <span className="hm__drawer-cat-amt">¥{formatCurrency(c.amount)}</span>
-                    <span className="hm__drawer-cat-pct">
-                      {total > 0 ? ((c.amount / total) * 100).toFixed(0) : 0}%
-                    </span>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-
-            {dayBills.length > 0 && (
-              <div className="hm__drawer-bills">
-                <div className="hm__drawer-bills-title">账单明细</div>
-                {dayBills.map((b, i) => {
-                  const cat = getCategoryById(b.categoryId)
-                  return (
+            <div className="hm__drawer-body">
+              {catBreakdown.length > 0 && (
+                <div className="hm__drawer-cats">
+                  {catBreakdown.map((c, i) => (
                     <motion.div
-                      key={b.id}
-                      className="hm__drawer-bill"
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.04, duration: 0.2 }}
+                      key={c.name}
+                      className="hm__drawer-cat"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.2 }}
                     >
-                      <span className="hm__drawer-bill-icon">
-                        {cat.iconComponent
-                          ? <CategoryIcon categoryId={b.categoryId} size={20} color={cat.color} iconComponent={cat.iconComponent} />
-                          : cat.icon
-                        }
+                      <span className="hm__drawer-cat-dot" style={{ background: c.color }} />
+                      <span className="hm__drawer-cat-name">{c.name}</span>
+                      <span className="hm__drawer-cat-amt">¥{formatCurrency(c.amount)}</span>
+                      <span className="hm__drawer-cat-pct">
+                        {total > 0 ? ((c.amount / total) * 100).toFixed(0) : 0}%
                       </span>
-                      <div className="hm__drawer-bill-info">
-                        <span className="hm__drawer-bill-cat">{cat.name}</span>
-                        {b.note && <span className="hm__drawer-bill-note">{b.note}</span>}
-                      </div>
-                      <span className="hm__drawer-bill-amt">-¥{formatCurrency(b.amount)}</span>
                     </motion.div>
-                  )
-                })}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
 
-            {dayBills.length === 0 && (
-              <div className="hm__drawer-empty">当日无消费记录</div>
-            )}
+              {dayBills.length > 0 && (
+                <div className="hm__drawer-bills">
+                  <div className="hm__drawer-bills-title">账单明细</div>
+                  {dayBills.map((b, i) => {
+                    const cat = getCategoryById(b.categoryId)
+                    return (
+                      <motion.div
+                        key={b.id}
+                        className="hm__drawer-bill"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.04, duration: 0.2 }}
+                      >
+                        <span className="hm__drawer-bill-icon">
+                          {cat.iconComponent
+                            ? <CategoryIcon categoryId={b.categoryId} size={20} color={cat.color} iconComponent={cat.iconComponent} />
+                            : cat.icon
+                          }
+                        </span>
+                        <div className="hm__drawer-bill-info">
+                          <span className="hm__drawer-bill-cat">{cat.name}</span>
+                          {b.note && <span className="hm__drawer-bill-note">{b.note}</span>}
+                        </div>
+                        <span className="hm__drawer-bill-amt">-¥{formatCurrency(b.amount)}</span>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {dayBills.length === 0 && (
+                <div className="hm__drawer-empty">当日无消费记录</div>
+              )}
+            </div>
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

@@ -374,27 +374,49 @@
 .hm__drawer-bg {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
   z-index: 300;
+
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  pointer-events: auto;
+
+  background: rgba(255, 255, 255, .08);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
 .hm__drawer {
+  position: relative;
+  flex-shrink: 0;
+
   background: var(--bg-card);
   border: var(--border-width) solid var(--border);
   border-bottom: none;
-  border-radius: 34px 34px 0 0;
+  border-radius: 28px 28px 0 0;
+
   overflow: hidden;
   isolation: isolate;
-  width: 100%;
-  max-width: 480px;
-  padding: 16px var(--pad) calc(var(--safe-bottom) + 20px);
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+
+  width: min(86vw, 520px);
+  margin-inline: auto;
+  margin-bottom: 0;
+
+  max-height: 82vh;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow:
+    0 -8px 24px rgba(0, 0, 0, .08),
+    0 0 0 1px rgba(0, 0, 0, .02);
+}
+
+.hm__drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 var(--pad) calc(var(--safe-bottom) + 20px);
 }
 
 .hm__drawer-handle {
@@ -404,6 +426,7 @@
   background: #D5D0CA;
   margin: 14px auto 18px;
   opacity: 0.22;
+  flex-shrink: 0;
 }
 
 .hm__drawer-header {
@@ -411,6 +434,8 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
+  padding: 0 var(--pad);
+  flex-shrink: 0;
 }
 
 .hm__drawer-date {
