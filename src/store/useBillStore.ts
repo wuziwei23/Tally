@@ -107,7 +107,7 @@ export function selectMonthIncome(state: BillState): number {
 
 export function selectCategoryStats(state: BillState): CategoryStat[] {
   const month = todayISO().slice(0, 7)
-  const monthBills = state.bills.filter((b) => b.date.startsWith(month))
+  const monthBills = state.bills.filter((b) => b.type === 'expense' && b.date.startsWith(month))
 
   const map = new Map<string, { total: number; count: number }>()
   let grandTotal = 0

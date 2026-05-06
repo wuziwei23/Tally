@@ -21,9 +21,9 @@ export default function BudgetBar() {
     return { spent: totalSpent, budget: totalBudget, remain: remaining, percent: pct };
   }, [bills]);
 
-  const ringColor = percent >= 100 ? '#E96A5F' : percent >= 80 ? '#F5A623' : '#F3D99B';
+  const ringColor = percent >= 100 ? '#E96A5F' : percent >= 80 ? '#E8A84C' : '#D9C47A';
 
-  const radius = 20;
+  const radius = 16;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (Math.min(percent, 100) / 100) * circumference;
 
@@ -31,22 +31,24 @@ export default function BudgetBar() {
     <div className="budget-bar">
       <div className="budget-bar__info">
         <span className="budget-bar__title">本月预算</span>
-        <span className="budget-bar__amount">¥{spent} / ¥{budget}</span>
-        <span className="budget-bar__remain">剩余 ¥{remain}</span>
+        <div className="budget-bar__amounts">
+          <span className="budget-bar__amount">¥{spent} / ¥{budget}</span>
+          <span className="budget-bar__remain">剩余 ¥{remain}</span>
+        </div>
       </div>
       <div className="budget-bar__ring">
-        <svg width="52" height="52" viewBox="0 0 52 52">
+        <svg width="44" height="44" viewBox="0 0 44 44">
           <circle
-            cx="26" cy="26" r={radius}
+            cx="22" cy="22" r={radius}
             fill="none"
-            stroke="#E8E4DC"
-            strokeWidth="6"
+            stroke="#E7E1D6"
+            strokeWidth="5"
           />
           <circle
-            cx="26" cy="26" r={radius}
+            cx="22" cy="22" r={radius}
             fill="none"
             stroke={ringColor}
-            strokeWidth="6"
+            strokeWidth="5"
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}

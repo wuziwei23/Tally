@@ -32,26 +32,25 @@ export function useCategories() {
       icon,
       type,
       color,
-      id: 'custom_' + Date.now(),
     })
     setCustomCategories(prev => [...prev, newCat])
   }, [])
 
   const deleteCategory = useCallback((catId) => {
-    setCustomCategories(prev => {
-      const target = prev.find(c => c.id === catId)
-      if (!target) return prev
-      categoryRepo.deleteCategory(catId)
-      // Re-map orphaned bills to "其他"
-      const fallbackId = target.type === 'expense' ? 'other_expense' : 'other_income'
-      const { bills, updateBill } = useBillStore.getState()
-      for (const b of bills) {
-        if (b.categoryId === catId) {
-          updateBill(b.id, { categoryId: fallbackId })
-        }
+    const target = categoryRepo.findAll().find(c => c.id === catId)
+    if (!target) return
+
+    categoryRepo.deleteCategory(catId)
+
+    const fallbackId = target.type === 'expense' ? 'other_expense' : 'other_income'
+    const { bills, updateBill } = useBillStore.getState()
+    for (const b of bills) {
+      if (b.categoryId === catId) {
+        updateBill(b.id, { categoryId: fallbackId })
       }
-      return prev.filter(c => c.id !== catId)
-    })
+    }
+
+    setCustomCategories(prev => prev.filter(c => c.id !== catId))
   }, [])
 
   return { expenseCategories, incomeCategories, addCategory, deleteCategory }

@@ -19,7 +19,8 @@ export default function SettingsPage() {
   }, [showAccountDrawer]);
 
   const categories = catType === 'expense' ? expenseCategories : incomeCategories;
-  const customCategories = categories.filter(c => c.isCustom);
+  const defaultIds = new Set([...defaultExpense, ...defaultIncome].map(c => c.id));
+  const customCategories = categories.filter(c => !defaultIds.has(c.id));
 
   function handleAddCustom({ name, icon, color }) {
     addCategory({ name, icon, color, type: catType });
@@ -30,8 +31,8 @@ export default function SettingsPage() {
   }
 
   const defaultCount = defaultExpense.length + defaultIncome.length;
-  const customCount = expenseCategories.filter(c => c.isCustom).length
-    + incomeCategories.filter(c => c.isCustom).length;
+  const customCount = expenseCategories.filter(c => !defaultIds.has(c.id)).length
+    + incomeCategories.filter(c => !defaultIds.has(c.id)).length;
 
   return (
     <div className="page page-enter">

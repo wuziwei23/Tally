@@ -17,7 +17,11 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 
   private write<T>(collection: string, items: T[]): void {
-    localStorage.setItem(collection, JSON.stringify(items))
+    try {
+      localStorage.setItem(collection, JSON.stringify(items))
+    } catch (e) {
+      console.error(`[Storage] Failed to write "${collection}":`, e)
+    }
   }
 
   save<T extends { id: string }>(collection: string, item: Omit<T, 'id'> & { id?: string }): T {
@@ -47,8 +51,8 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 
   delete(collection: string, id: string): boolean {
-    const items = this.read(collection)
-    const filtered = items.filter((item: { id: string }) => item.id !== id)
+    const items = this.read<{ id: string }>(collection)
+    const filtered = items.filter((item) => item.id !== id)
     if (filtered.length === items.length) return false
     this.write(collection, filtered)
     return true

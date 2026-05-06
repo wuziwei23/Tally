@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import {
   useBillStore,
   selectTodayExpense,
@@ -9,14 +9,16 @@ import {
 import type { Bill, CategoryStat } from '../types'
 
 // ── Hydration ─────────────────────────────────────────
-let _hydrated = false
 
 export function useHydrated(): boolean {
   const hydrated = useBillStore((s) => s.hasHydrated)
-  if (!_hydrated) {
-    _hydrated = true
-    useBillStore.getState().hydrate()
-  }
+
+  useEffect(() => {
+    if (!useBillStore.getState().hasHydrated) {
+      useBillStore.getState().hydrate()
+    }
+  }, [])
+
   return hydrated
 }
 
