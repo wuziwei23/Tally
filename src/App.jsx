@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useHydrated } from './hooks/useBill';
 import TabBar from './components/layout/TabBar';
+import BudgetBar from './components/home/BudgetBar';
 import HomePage from './pages/HomePage';
 import AddTransactionPage from './pages/AddTransactionPage';
 import ChartsPage from './pages/ChartsPage';
@@ -53,7 +54,12 @@ function AppLayout() {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      {!hideTabBar && <TabBar />}
+      {!hideTabBar && (
+        <>
+          <BudgetBar />
+          <TabBar />
+        </>
+      )}
     </>
   );
 }
