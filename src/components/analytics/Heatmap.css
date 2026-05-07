@@ -383,6 +383,7 @@
   background: rgba(255, 255, 255, .08);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
+  will-change: opacity, backdrop-filter;
 }
 
 .hm__drawer {
@@ -396,6 +397,7 @@
 
   overflow: hidden;
   isolation: isolate;
+  will-change: transform;
 
   width: min(86vw, 520px);
   margin-inline: auto;

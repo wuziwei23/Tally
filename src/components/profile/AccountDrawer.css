@@ -11,6 +11,7 @@
   background: rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
+  will-change: opacity, backdrop-filter;
   z-index: 300;
   pointer-events: auto;
 }
@@ -33,6 +34,7 @@
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
+  will-change: transform;
 }
 
 .ad__handle {

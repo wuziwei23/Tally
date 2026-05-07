@@ -19,7 +19,7 @@ export default function DeleteConfirmDrawer({ open, onClose, onConfirm }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.18 }}
           onClick={onClose}
         >
           <motion.div
@@ -27,7 +27,7 @@ export default function DeleteConfirmDrawer({ open, onClose, onConfirm }) {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+            transition={{ type: 'spring', damping: 30, stiffness: 400, mass: 0.8 }}
             onClick={e => e.stopPropagation()}
           >
             <div className="dcd__handle" />

@@ -37,7 +37,7 @@ export default function HeatmapDetailDrawer({ date, bills, onClose }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.18 }}
           onClick={onClose}
         >
           <motion.div
@@ -45,7 +45,7 @@ export default function HeatmapDetailDrawer({ date, bills, onClose }) {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+            transition={{ type: 'spring', damping: 30, stiffness: 400, mass: 0.8 }}
             onClick={e => e.stopPropagation()}
           >
             <div className="hm__drawer-handle" />
@@ -57,21 +57,15 @@ export default function HeatmapDetailDrawer({ date, bills, onClose }) {
             <div className="hm__drawer-body">
               {catBreakdown.length > 0 && (
                 <div className="hm__drawer-cats">
-                  {catBreakdown.map((c, i) => (
-                    <motion.div
-                      key={c.name}
-                      className="hm__drawer-cat"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05, duration: 0.2 }}
-                    >
+                  {catBreakdown.map((c) => (
+                    <div key={c.name} className="hm__drawer-cat">
                       <span className="hm__drawer-cat-dot" style={{ background: c.color }} />
                       <span className="hm__drawer-cat-name">{c.name}</span>
                       <span className="hm__drawer-cat-amt">¥{formatCurrency(c.amount)}</span>
                       <span className="hm__drawer-cat-pct">
                         {total > 0 ? ((c.amount / total) * 100).toFixed(0) : 0}%
                       </span>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               )}
@@ -79,16 +73,10 @@ export default function HeatmapDetailDrawer({ date, bills, onClose }) {
               {dayBills.length > 0 && (
                 <div className="hm__drawer-bills">
                   <div className="hm__drawer-bills-title">账单明细</div>
-                  {dayBills.map((b, i) => {
+                  {dayBills.map((b) => {
                     const cat = getCategoryById(b.categoryId)
                     return (
-                      <motion.div
-                        key={b.id}
-                        className="hm__drawer-bill"
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.04, duration: 0.2 }}
-                      >
+                      <div key={b.id} className="hm__drawer-bill">
                         <span className="hm__drawer-bill-icon">
                           {cat.iconComponent
                             ? <CategoryIcon categoryId={b.categoryId} size={20} color={cat.color} iconComponent={cat.iconComponent} />
@@ -100,7 +88,7 @@ export default function HeatmapDetailDrawer({ date, bills, onClose }) {
                           {b.note && <span className="hm__drawer-bill-note">{b.note}</span>}
                         </div>
                         <span className="hm__drawer-bill-amt">-¥{formatCurrency(b.amount)}</span>
-                      </motion.div>
+                      </div>
                     )
                   })}
                 </div>
