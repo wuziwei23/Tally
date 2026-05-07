@@ -73,12 +73,11 @@ export default function SettingsPage() {
       </div>
 
       {/* Account Drawer */}
-      {showAccountDrawer && (
-        <AccountDrawer
-          onClose={() => setShowAccountDrawer(false)}
-          onConfirm={handleSaveProfile}
-        />
-      )}
+      <AccountDrawer
+        open={showAccountDrawer}
+        onClose={() => setShowAccountDrawer(false)}
+        onConfirm={handleSaveProfile}
+      />
     </div>
   );
 }

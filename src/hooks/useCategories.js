@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { expenseCategories as defaultExpense, incomeCategories as defaultIncome } from '../data/categories'
+import { expenseCategories as defaultExpense, incomeCategories as defaultIncome, invalidateCategoryCache } from '../data/categories'
 import { ICON_MAP } from '../data/iconMap'
 import { useBillStore } from '../store/useBillStore'
 import { categoryRepo } from '../database'
@@ -33,6 +33,7 @@ export function useCategories() {
       type,
       color,
     })
+    invalidateCategoryCache()
     setCustomCategories(prev => [...prev, newCat])
   }, [])
 
@@ -41,6 +42,7 @@ export function useCategories() {
     if (!target) return
 
     categoryRepo.deleteCategory(catId)
+    invalidateCategoryCache()
 
     const fallbackId = target.type === 'expense' ? 'other_expense' : 'other_income'
     const { bills, updateBill } = useBillStore.getState()

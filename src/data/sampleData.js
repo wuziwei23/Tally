@@ -1,6 +1,5 @@
-let counter = 0;
 function uid() {
-  return 'txn_' + Date.now() + '_' + (++counter);
+  return 'txn_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
 }
 
 function makeTxn(type, categoryId, amount, date, note = '') {

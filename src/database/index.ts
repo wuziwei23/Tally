@@ -22,6 +22,9 @@ function migrate(): void {
       const bills: Bill[] = parsed?.state?.bills
       if (Array.isArray(bills) && bills.length > 0 && billRepo.findAll().length === 0) {
         billRepo.replaceAll(bills)
+        if (billRepo.findAll().length === 0) {
+          localStorage.setItem('vibe-ledger-storage', oldBillsRaw)
+        }
       }
     } catch { /* ignore */ }
     localStorage.removeItem('vibe-ledger-storage')
@@ -34,6 +37,9 @@ function migrate(): void {
       const cats: Category[] = JSON.parse(oldCatsRaw)
       if (Array.isArray(cats) && cats.length > 0 && categoryRepo.findAll().length === 0) {
         categoryRepo.replaceAll(cats)
+        if (categoryRepo.findAll().length === 0) {
+          localStorage.setItem('custom_categories', oldCatsRaw)
+        }
       }
     } catch { /* ignore */ }
     localStorage.removeItem('custom_categories')
@@ -46,6 +52,9 @@ function migrate(): void {
       const profile: UserProfile = JSON.parse(oldProfileRaw)
       if (profile && userRepo.getProfile() === null) {
         userRepo.saveProfile(profile)
+        if (userRepo.getProfile() === null) {
+          localStorage.setItem('userProfile', oldProfileRaw)
+        }
       }
     } catch { /* ignore */ }
     localStorage.removeItem('userProfile')

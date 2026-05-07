@@ -15,16 +15,26 @@ const AVATAR_COLORS = [
   { hex: '#777777', name: '深灰' },
 ]
 
-export default function AccountDrawer({ onClose, onConfirm }) {
+export default function AccountDrawer({ open, onClose, onConfirm }) {
   const existing = userRepo.getProfile()
   const [nickname, setNickname] = useState(existing?.nickname || '')
   const [avatarColor, setAvatarColor] = useState(existing?.avatarColor || AVATAR_COLORS[0].hex)
   const [loginType, setLoginType] = useState(existing?.loginType || null)
 
   useEffect(() => {
+    if (!open) return
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = '' }
-  }, [])
+  }, [open])
+
+  useEffect(() => {
+    if (open) {
+      const p = userRepo.getProfile()
+      setNickname(p?.nickname || '')
+      setAvatarColor(p?.avatarColor || AVATAR_COLORS[0].hex)
+      setLoginType(p?.loginType || null)
+    }
+  }, [open])
 
   const nicknameLen = nickname.trim().length
   const canSubmit = nicknameLen >= 2 && nicknameLen <= 12
@@ -50,6 +60,7 @@ export default function AccountDrawer({ onClose, onConfirm }) {
 
   return (
     <AnimatePresence>
+      {open && (
       <motion.div
         className="acd__bg ad__bg"
         initial={{ opacity: 0 }}
@@ -189,6 +200,7 @@ export default function AccountDrawer({ onClose, onConfirm }) {
           </div>
         </motion.div>
       </motion.div>
+      )}
     </AnimatePresence>
   )
 }

@@ -401,9 +401,9 @@ export default function AnalyticsDetailPage() {
     for (const catId of allCats) {
       const cur = curMap[catId] || 0;
       const prev = prevMap[catId] || 0;
-      let change = 0;
+      let change = null;
       if (prev > 0) change = ((cur - prev) / prev) * 100;
-      else if (cur > 0) change = 100;
+      else if (cur > 0) change = Infinity;
       const cat = getCategoryById(catId);
       result.push({ catId, name: cat.name, color: cat.color, cur, prev, change });
     }
@@ -431,8 +431,8 @@ export default function AnalyticsDetailPage() {
     }
 
     if (catCompare.length > 0) {
-      const biggestIncrease = [...catCompare].filter(c => c.change > 0).sort((a, b) => b.change - a.change)[0];
-      const biggestDecrease = [...catCompare].filter(c => c.change < 0).sort((a, b) => a.change - b.change)[0];
+      const biggestIncrease = [...catCompare].filter(c => c.change !== null && c.change > 0 && c.change !== Infinity).sort((a, b) => b.change - a.change)[0];
+      const biggestDecrease = [...catCompare].filter(c => c.change !== null && c.change < 0).sort((a, b) => a.change - b.change)[0];
       if (biggestIncrease) {
         insights.push(`${biggestIncrease.name}支出较上周期增长 ${biggestIncrease.change.toFixed(0)}%，建议关注。`);
       }
@@ -606,8 +606,9 @@ export default function AnalyticsDetailPage() {
             <div className="adet__card">
               <div className="adet__compare-list">
                 {catCompare.map(c => {
-                  const isUp = c.change > 0;
-                  const isFlat = c.change === 0;
+                  const isNew = c.change === Infinity;
+                  const isUp = c.change !== null && c.change > 0 && !isNew;
+                  const isFlat = c.change === null || c.change === 0;
                   return (
                     <button
                       key={c.catId}
@@ -618,8 +619,8 @@ export default function AnalyticsDetailPage() {
                       <span className="adet__compare-dot" style={{ background: c.color }} />
                       <span className="adet__compare-name">{c.name}</span>
                       <span className="adet__compare-cur">¥{formatCurrency(c.cur)}</span>
-                      <span className={`adet__compare-change ${isFlat ? '' : isUp ? 'text-red' : 'text-green'}`}>
-                        {isFlat ? '—' : `${isUp ? '+' : ''}${c.change.toFixed(0)}%`}
+                      <span className={`adet__compare-change ${isFlat ? '' : (isUp || isNew) ? 'text-red' : 'text-green'}`}>
+                        {isNew ? '新增' : isFlat ? '—' : `${isUp ? '+' : ''}${c.change.toFixed(0)}%`}
                       </span>
                     </button>
                   );

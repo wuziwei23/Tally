@@ -46,7 +46,7 @@ export default function HeatmapCard() {
     return bills.filter(b => b.type === 'expense' && b.date >= startStr && b.date <= endStr)
   }, [bills, start, end])
 
-  const data = useHeatmapData(bills, start, end)
+  const data = useHeatmapData(filteredBills, start, end)
   const summary = useHeatmapSummary(filteredBills, data)
 
   if (data.months.length === 0) {
@@ -74,7 +74,7 @@ export default function HeatmapCard() {
       {selectedDate && (
         <HeatmapDetailDrawer
           date={selectedDate}
-          bills={bills}
+          bills={filteredBills}
           onClose={deselect}
         />
       )}

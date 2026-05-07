@@ -151,7 +151,6 @@ export function useHeatmapData(bills: Bill[], start: Date, end: Date): HeatmapDa
     const endStr = fmt(endClamped)
 
     for (const b of bills) {
-      if (b.type !== 'expense') continue
       if (b.date >= startStr && b.date <= endStr) {
         dailyMap[b.date] = (dailyMap[b.date] || 0) + b.amount
         const cat = getCategoryById(b.categoryId)

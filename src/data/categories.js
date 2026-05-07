@@ -30,10 +30,23 @@ function withIconComponent(cat) {
   return { ...cat, iconComponent: ICON_MAP[cat.icon] || null };
 }
 
+let _customCache = null;
+
+export function invalidateCategoryCache() {
+  _customCache = null;
+}
+
+function getCustomCategories() {
+  if (!_customCache) {
+    _customCache = categoryRepo.findAll();
+  }
+  return _customCache;
+}
+
 export function getCategoryById(id) {
   const found = allCategories.find(c => c.id === id);
   if (found) return found;
-  const customs = categoryRepo.findAll();
+  const customs = getCustomCategories();
   const custom = customs.find(c => c.id === id);
   if (custom) return withIconComponent(custom);
   return { id, name: '未知', icon: '❓', color: '#8E8E93' };
@@ -42,7 +55,7 @@ export function getCategoryById(id) {
 export function getCategoryByName(name) {
   const found = allCategories.find(c => c.name === name);
   if (found) return found;
-  const customs = categoryRepo.findAll();
+  const customs = getCustomCategories();
   const custom = customs.find(c => c.name === name);
   if (custom) return withIconComponent(custom);
   return { id: name, name: '未知', icon: '❓', color: '#8E8E93' };

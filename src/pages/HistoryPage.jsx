@@ -23,9 +23,8 @@ export default function HistoryPage() {
   const { deleteBill } = useBillActions();
   const navigate = useNavigate();
   const [filters, setFilters] = useState(initialFilters);
-  const [deletingId, setDeletingId] = useState(null);
   const [actionTarget, setActionTarget] = useState(null);
-  const [deleteFromAction, setDeleteFromAction] = useState(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
   const categories = filters.type === 'expense' ? expenseCategories : incomeCategories;
 
@@ -100,29 +99,22 @@ export default function HistoryPage() {
   }, [actionTarget, navigate]);
 
   const handleActionDelete = useCallback(() => {
-    setDeleteFromAction(actionTarget);
-    setActionTarget(null);
+    if (actionTarget) {
+      setPendingDeleteId(actionTarget.id);
+      setActionTarget(null);
+    }
   }, [actionTarget]);
 
-  const handleConfirmDeleteFromAction = useCallback(() => {
-    if (deleteFromAction) {
-      deleteBill(deleteFromAction.id);
-      setDeleteFromAction(null);
+  const handleConfirmDelete = useCallback(() => {
+    if (pendingDeleteId) {
+      deleteBill(pendingDeleteId);
+      setPendingDeleteId(null);
     }
-  }, [deleteFromAction, deleteBill]);
+  }, [pendingDeleteId, deleteBill]);
 
   function handleRequestDelete(id) {
-    setDeletingId(id);
+    setPendingDeleteId(id);
   }
-
-  function handleConfirmDelete() {
-    if (deletingId) {
-      deleteBill(deletingId);
-      setDeletingId(null);
-    }
-  }
-
-  const deletingBill = deletingId ? transactions.find(t => t.id === deletingId) : null;
 
   return (
     <div className="page page-enter">
@@ -212,31 +204,6 @@ export default function HistoryPage() {
           ))
         )}
 
-        {/* Delete Confirm Modal */}
-        {deletingBill && (
-          <div className="hist__modal-bg" onClick={() => setDeletingId(null)}>
-            <div className="hist__modal" onClick={e => e.stopPropagation()}>
-              <h3 className="hist__modal-title">确认删除</h3>
-              <p className="hist__modal-desc">确认删除这条记录？</p>
-              <div className="hist__modal-btns">
-                <button
-                  className="hist__modal-btn hist__modal-btn--cancel"
-                  onClick={() => setDeletingId(null)}
-                >
-                  取消
-                </button>
-                <button
-                  className="hist__modal-btn hist__modal-btn--confirm"
-                  onClick={handleConfirmDelete}
-                  style={{ background: '#FF3B30', color: '#fff' }}
-                >
-                  确认删除
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         <BillActionDrawer
           open={!!actionTarget}
           onClose={() => setActionTarget(null)}
@@ -245,9 +212,9 @@ export default function HistoryPage() {
         />
 
         <DeleteConfirmDrawer
-          open={!!deleteFromAction}
-          onClose={() => setDeleteFromAction(null)}
-          onConfirm={handleConfirmDeleteFromAction}
+          open={!!pendingDeleteId}
+          onClose={() => setPendingDeleteId(null)}
+          onConfirm={handleConfirmDelete}
         />
       </div>
     </div>

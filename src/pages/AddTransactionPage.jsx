@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useBillStore } from '../store/useBillStore';
 import { useBillActions } from '../hooks/useBill';
@@ -21,6 +21,8 @@ export default function AddTransactionPage() {
   const { addBill, updateBill } = useBillActions();
   const navigate = useNavigate();
   const { expenseCategories, incomeCategories } = useCategories();
+
+  const savedCategoryRef = useRef({ expense: editingBill?.type === 'expense' ? editingBill?.categoryId || '' : '', income: editingBill?.type === 'income' ? editingBill?.categoryId || '' : '' });
 
   const categories = type === 'expense' ? expenseCategories : incomeCategories;
 
@@ -75,13 +77,13 @@ export default function AddTransactionPage() {
         <div className="add-pg__type">
           <button
             className={`add-pg__type-btn ${type === 'expense' ? 'add-pg__type-btn--expense' : ''}`}
-            onClick={() => { setType('expense'); setCategoryId(''); }}
+            onClick={() => { savedCategoryRef.current[type] = categoryId; setType('expense'); setCategoryId(savedCategoryRef.current.expense); }}
           >
             支出
           </button>
           <button
             className={`add-pg__type-btn ${type === 'income' ? 'add-pg__type-btn--income' : ''}`}
-            onClick={() => { setType('income'); setCategoryId(''); }}
+            onClick={() => { savedCategoryRef.current[type] = categoryId; setType('income'); setCategoryId(savedCategoryRef.current.income); }}
           >
             收入
           </button>
