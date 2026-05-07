@@ -24,7 +24,7 @@
 }
 
 .tabbar__item-wrapper {
-  flex-shrink: 0;
+  flex: 1;
 }
 
 .tabbar__item {
@@ -36,19 +36,15 @@
   padding: 4px 14px;
   border-radius: 999px;
   height: 56px;
-  min-width: 60px;
   color: var(--text-gray);
   text-decoration: none;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
 .tabbar__item--active {
   background: var(--bg-yellow);
   color: var(--text-dark);
   box-shadow: 0 2px 6px rgba(0,0,0,.05);
-  border-radius: 999px;
-  min-width: 68px;
-  height: 56px;
 }
 
 .tabbar__item:active {
