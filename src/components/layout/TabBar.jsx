@@ -1,4 +1,6 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { motion, useTransform } from 'framer-motion';
+import { useScrollCollapse } from '../../hooks/useScrollCollapse';
 import './TabBar.css';
 
 const tabs = [
@@ -26,21 +28,50 @@ const tabs = [
 ];
 
 export default function TabBar() {
+  const location = useLocation();
+  const { scrollProgress, isCollapsed } = useScrollCollapse(80);
+
+  const activeIndex = tabs.findIndex(t =>
+    t.to === '/' ? location.pathname === '/' : location.pathname.startsWith(t.to)
+  );
+
+  const innerWidth = useTransform(scrollProgress, [0, 1], [100, 25], { clamp: true });
+  const innerWidthStr = useTransform(innerWidth, v => `${v}%`);
+
+  const inactiveOpacity = useTransform(scrollProgress, [0, 0.6], [1, 0], { clamp: true });
+  const inactiveScale = useTransform(scrollProgress, [0, 0.8], [1, 0.3], { clamp: true });
+
   return (
     <nav className="tabbar">
-      <div className="tabbar__inner">
-        {tabs.map(tab => (
-          <NavLink
-            key={tab.to}
-            to={tab.to}
-            end={tab.to === '/'}
-            className={({ isActive }) => `tabbar__item ${isActive ? 'tabbar__item--active' : ''}`}
-          >
-            <span className="tabbar__icon">{tab.icon}</span>
-            <span className="tabbar__label">{tab.label}</span>
-          </NavLink>
-        ))}
-      </div>
+      <motion.div
+        className="tabbar__inner"
+        style={{ width: innerWidthStr }}
+      >
+        {tabs.map((tab, index) => {
+          const isActive = index === activeIndex;
+          if (!isActive && isCollapsed) return null;
+
+          return (
+            <motion.div
+              key={tab.to}
+              className="tabbar__item-wrapper"
+              style={!isActive ? {
+                opacity: inactiveOpacity,
+                scale: inactiveScale,
+              } : undefined}
+            >
+              <NavLink
+                to={tab.to}
+                end={tab.to === '/'}
+                className={({ isActive: a }) => `tabbar__item ${a ? 'tabbar__item--active' : ''}`}
+              >
+                <span className="tabbar__icon">{tab.icon}</span>
+                <span className="tabbar__label">{tab.label}</span>
+              </NavLink>
+            </motion.div>
+          );
+        })}
+      </motion.div>
     </nav>
   );
 }

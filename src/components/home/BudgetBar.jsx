@@ -1,9 +1,15 @@
 import { useMemo } from 'react';
+import { motion, useTransform } from 'framer-motion';
 import { useBillStore } from '../../store/useBillStore';
+import { useScrollCollapse } from '../../hooks/useScrollCollapse';
 import './BudgetBar.css';
 
 export default function BudgetBar() {
   const bills = useBillStore(s => s.bills);
+  const { scrollProgress } = useScrollCollapse(80);
+
+  const bottomPx = useTransform(scrollProgress, [0, 1], [92, 44], { clamp: true });
+  const bottom = useTransform(bottomPx, v => `calc(${v}px + env(safe-area-inset-bottom, 0px))`);
 
   const { spent, budget, remain, percent } = useMemo(() => {
     const now = new Date();
@@ -28,7 +34,7 @@ export default function BudgetBar() {
   const strokeDashoffset = circumference - (Math.min(percent, 100) / 100) * circumference;
 
   return (
-    <div className="budget-bar">
+    <motion.div className="budget-bar" style={{ bottom }}>
       <div className="budget-bar__info">
         <span className="budget-bar__title">本月预算</span>
         <div className="budget-bar__amounts">
@@ -56,6 +62,6 @@ export default function BudgetBar() {
         </svg>
         <span className="budget-bar__ring-percent">{percent}%</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
